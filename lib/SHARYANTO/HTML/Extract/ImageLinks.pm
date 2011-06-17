@@ -68,3 +68,10 @@ sub extract_image_links {
 }
 
 1;
+__END__
+
+=head1 FUNCTIONS
+
+None are exported by default, but they are exportable.
+
+=cut
