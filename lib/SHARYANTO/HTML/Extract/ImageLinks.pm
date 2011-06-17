@@ -44,7 +44,6 @@ sub extract_image_links {
             $base = $2;
         }
     }
-    $base //= '';
 
     my %memory;
     my @res;
