@@ -5,8 +5,6 @@ package SHARYANTO::Proc::Daemon;
 
 =cut
 
-# routines for a preforking, autoreloading daemon
-
 use 5.010;
 use strict;
 use warnings;
