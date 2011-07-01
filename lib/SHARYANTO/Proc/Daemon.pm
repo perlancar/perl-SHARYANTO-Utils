@@ -256,6 +256,7 @@ sub update_scoreboard {
         my $i = 0;
         while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
             my ($pid, $state, $ts) = unpack("NCN", $rec);
+            $state = chr($state);
             $i++;
             next unless $pid == $$;
             $self->{_scoreboard_pos} = ($i-1)*$SC_RECSIZE;
@@ -269,13 +270,13 @@ sub update_scoreboard {
     if ($lock) {
         syswrite($self->{_scoreboard_fh},
                  sprintf("%-${SC_RECSIZE}s",
-                         pack("NCN", $$, $state, time())));
+                         pack("NCN", $$, ord($state), time())));
         flock $self->{_scoreboard_fh}, 8;
     } else {
         sysseek $self->{_scoreboard_fh}, $self->{_scoreboard_pos}+4, 0;
         syswrite($self->{_scoreboard_fh},
                  sprintf("%-${SC_RECSIZE}s",
-                         pack("CN", $state, time())));
+                         pack("CN", ord($state), time())));
     }
 }
 
@@ -287,6 +288,7 @@ sub delete_process_from_scoreboard {
     sysseek $self->{_scoreboard_fh}, 0, 0;
     while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
         my ($pid, $state, $ts) = unpack("NCN", $rec);
+        $state = chr($state);
         next unless $pid == $$;
         flock $self->{_scoreboard_fh}, 2;
         syswrite($self->{_scoreboard_fh},
@@ -306,6 +308,7 @@ sub summarize_scoreboard {
     sysseek $self->{_scoreboard_fh}, 0, 0;
     while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
         my ($pid, $state, $ts) = unpack("NCN", $rec);
+        $state = chr($state);
         next unless $pid;
         $res->{num_children}++;
         if ($state =~ /^[_.]$/) {
