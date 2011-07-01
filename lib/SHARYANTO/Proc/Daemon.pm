@@ -9,6 +9,7 @@ use 5.010;
 use strict;
 use warnings;
 
+use Fcntl qw(:DEFAULT :flock);
 use FindBin;
 use IO::Select;
 use POSIX;
@@ -26,19 +27,29 @@ Arguments:
 
 =over 4
 
-=item * run_as_root (default 1)
+=item * run_as_root => BOOL (default 1)
 
 If true, bails out if not running as root.
 
 =item * error_log_path (required if daemonize=1)
 
-=item * access_log_path (required if daemonize=1)
+=item * access_log_path => STR (required if daemonize=1)
 
-=item * pid_path*
+=item * pid_path* => STR
 
-=item * daemonize (default 1)
+=item * scoreboard_path => STR (default none)
 
-=item * prefork (default 3, 0 means a nonforking/single-threaded daemon)
+=item * daemonize => BOOL (default 1)
+
+=item * prefork => INT (default 3, 0 means a nonforking/single-threaded daemon)
+
+=item * max_children => INT (default 150)
+
+Initially the number of children spawned will follow the 'prefork' setting. If
+while serving requests, all children are busy, parent will automatically
+increase the number of children gradually until 'max_children'. If afterwards
+these children are idle, they will be killed off until there are 'prefork'
+number of children again.
 
 =item * auto_reload_check_every => INT (default undef, meaning never)
 
@@ -80,6 +91,7 @@ sub new {
     $args{run_as_root}            //= 1;
     $args{daemonize}              //= 1;
     $args{prefork}                //= 3;
+    $args{max_children}           //= 150;
 
     die "BUG: Please specify main_loop routine"
         unless $args{main_loop};
@@ -211,13 +223,94 @@ sub init {
     my ($self) = @_;
 
     $self->{pid_path} or die "BUG: Please specify pid_path";
+    #$self->{scoreboard_path} or die "BUG: Please specify scoreboard_path";
     $self->{run_as_root} //= 1;
     if ($self->{run_as_root}) {
         $> and die "Permission denied, daemon must be run as root\n";
     }
 
+    $self->init_scoreboard;
     $self->daemonize if $self->{daemonize};
     warn "Daemon (PID $$) started at ", scalar(localtime), "\n";
+}
+
+# XXX use shared memory for better performance
+my $SC_RECSIZE = 20;
+sub init_scoreboard {
+    my ($self) = @_;
+    return unless $self->{scoreboard_path};
+    sysopen($self->{_scoreboard_fh}, $self->{scoreboard_path}, O_RDWR | O_CREAT)
+        or die "Can't initialize scoreboard path: $!";
+}
+
+sub update_scoreboard {
+    my ($self, $state) = @_;
+    return unless $self->{_scoreboard_fh};
+
+    my $lock;
+
+    if (defined $self->{_scoreboard_pos}) {
+    } else {
+        sysseek $self->{_scoreboard_fh}, 0, 0;
+        my $rec;
+        my $i = 0;
+        while (sysread($self->{_scoreboard_fh}, $buf, $SC_RECSIZE)) {
+            my ($pid, $state, $ts) = unpack("NCN", $buf);
+            $i++;
+            next unless $pid == $$;
+            $self->{_scoreboard_pos} = ($i-1)*$SC_RECSIZE;
+        }
+        if (!defined($self->{_scoreboard_pos})) {
+            flock $self->{_scoreboard_fh}, 2;
+            $lock++;
+            $self->{_scoreboard_pos} = $i*$SC_RECSIZE;
+        }
+    }
+    if ($lock) {
+        syswrite($self->{_scoreboard_fh},
+                 sprintf("%-${SC_RECSIZE}s",
+                         pack("NCN", $$, $state, time())));
+        flock $self->{_scoreboard_fh}, 8;
+    } else {
+        sysseek $self->{_scoreboard_fh}, $self->{_scoreboard_pos}+4, 0;
+        syswrite($self->{_scoreboard_fh},
+                 sprintf("%-${SC_RECSIZE}s",
+                         pack("CN", $state, time())));
+    }
+}
+
+sub delete_process_from_scoreboard {
+    my ($self, $pid) = @_;
+    return unless $self->{_scoreboard_fh};
+    sysseek $self->{_scoreboard_fh}, 0, 0;
+    while (sysread($self->{_scoreboard_fh}, $buf, $SC_RECSIZE)) {
+        my ($pid, $state, $ts) = unpack("NCN", $buf);
+        next unless $pid == $$;
+        flock $self->{_scoreboard_fh}, 2;
+        syswrite($self->{_scoreboard_fh},
+                 sprintf("%-${SC_RECSIZE}s",
+                         pack("NCN", 0, ".", time())));
+        flock $self->{_scoreboard_fh}, 8;
+        last;
+    }
+}
+
+sub summarize_scoreboard {
+    my ($self) = @_;
+    return unless $self->{_scoreboard_fh};
+    my $res = {num_children=>0, num_busy=>0, num_idle=>0};
+    sysseek $self->{_scoreboard_fh}, 0, 0;
+    while (sysread($self->{_scoreboard_fh}, $buf, $SC_RECSIZE)) {
+        my ($pid, $state, $ts) = unpack("NCN", $buf);
+        next unless $pid;
+        $res->{num_children}++;
+        if ($state =~ /^[_.]$/) {
+            $res->{num_idle}++;
+        } else {
+            $res->{num_busy}++;
+        }
+    }
+    $res;
 }
 
 sub run {
