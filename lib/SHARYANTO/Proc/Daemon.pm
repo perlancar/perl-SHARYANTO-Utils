@@ -239,7 +239,8 @@ my $SC_RECSIZE = 20;
 sub init_scoreboard {
     my ($self) = @_;
     return unless $self->{scoreboard_path};
-    sysopen($self->{_scoreboard_fh}, $self->{scoreboard_path}, O_RDWR | O_CREAT)
+    sysopen($self->{_scoreboard_fh}, $self->{scoreboard_path},
+            O_RDWR | O_CREAT | O_TRUNC)
         or die "Can't initialize scoreboard path: $!";
 }
 
@@ -255,6 +256,7 @@ sub update_scoreboard {
         my $rec;
         my $i = 0;
         while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
+            next unless length($rec) == $SC_RECSIZE;
             my ($pid, $state, $ts) = unpack("NCN", $rec);
             $state = chr($state);
             $i++;
@@ -275,8 +277,7 @@ sub update_scoreboard {
     } else {
         sysseek $self->{_scoreboard_fh}, $self->{_scoreboard_pos}+4, 0;
         syswrite($self->{_scoreboard_fh},
-                 sprintf("%-${SC_RECSIZE}s",
-                         pack("CN", ord($state), time())));
+                 pack("CN", ord($state), time()));
     }
 }
 
@@ -287,9 +288,11 @@ sub delete_process_from_scoreboard {
     my $rec;
     sysseek $self->{_scoreboard_fh}, 0, 0;
     while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
+        next unless length($rec) == $SC_RECSIZE;
         my ($pid, $state, $ts) = unpack("NCN", $rec);
         $state = chr($state);
-        next unless $pid == $$;
+        next unless $pid == $$ ||
+            !kill(0, $pid); # also clean pids that are no longer there
         flock $self->{_scoreboard_fh}, 2;
         syswrite($self->{_scoreboard_fh},
                  sprintf("%-${SC_RECSIZE}s",
@@ -307,6 +310,7 @@ sub summarize_scoreboard {
     my $res = {num_children=>0, num_busy=>0, num_idle=>0};
     sysseek $self->{_scoreboard_fh}, 0, 0;
     while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
+        next unless length($rec) == $SC_RECSIZE;
         my ($pid, $state, $ts) = unpack("NCN", $rec);
         $state = chr($state);
         next unless $pid;
