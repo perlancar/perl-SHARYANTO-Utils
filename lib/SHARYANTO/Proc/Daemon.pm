@@ -229,8 +229,8 @@ sub init {
         $> and die "Permission denied, daemon must be run as root\n";
     }
 
-    $self->init_scoreboard;
     $self->daemonize if $self->{daemonize};
+    $self->init_scoreboard;
     warn "Daemon (PID $$) started at ", scalar(localtime), "\n";
 }
 
