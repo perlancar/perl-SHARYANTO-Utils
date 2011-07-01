@@ -254,8 +254,8 @@ sub update_scoreboard {
         sysseek $self->{_scoreboard_fh}, 0, 0;
         my $rec;
         my $i = 0;
-        while (sysread($self->{_scoreboard_fh}, $buf, $SC_RECSIZE)) {
-            my ($pid, $state, $ts) = unpack("NCN", $buf);
+        while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
+            my ($pid, $state, $ts) = unpack("NCN", $rec);
             $i++;
             next unless $pid == $$;
             $self->{_scoreboard_pos} = ($i-1)*$SC_RECSIZE;
@@ -282,9 +282,11 @@ sub update_scoreboard {
 sub delete_process_from_scoreboard {
     my ($self, $pid) = @_;
     return unless $self->{_scoreboard_fh};
+
+    my $rec;
     sysseek $self->{_scoreboard_fh}, 0, 0;
-    while (sysread($self->{_scoreboard_fh}, $buf, $SC_RECSIZE)) {
-        my ($pid, $state, $ts) = unpack("NCN", $buf);
+    while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
+        my ($pid, $state, $ts) = unpack("NCN", $rec);
         next unless $pid == $$;
         flock $self->{_scoreboard_fh}, 2;
         syswrite($self->{_scoreboard_fh},
@@ -298,10 +300,12 @@ sub delete_process_from_scoreboard {
 sub summarize_scoreboard {
     my ($self) = @_;
     return unless $self->{_scoreboard_fh};
+
+    my $rec;
     my $res = {num_children=>0, num_busy=>0, num_idle=>0};
     sysseek $self->{_scoreboard_fh}, 0, 0;
-    while (sysread($self->{_scoreboard_fh}, $buf, $SC_RECSIZE)) {
-        my ($pid, $state, $ts) = unpack("NCN", $buf);
+    while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
+        my ($pid, $state, $ts) = unpack("NCN", $rec);
         next unless $pid;
         $res->{num_children}++;
         if ($state =~ /^[_.]$/) {
