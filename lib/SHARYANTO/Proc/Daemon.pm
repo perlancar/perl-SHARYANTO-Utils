@@ -243,6 +243,41 @@ sub init {
 
 # XXX use shared memory for better performance
 my $SC_RECSIZE = 20;
+
+# the scoreboard file contains fixed-size records, $SC_RECSIZE bytes each. each
+# record is used by a child process to store its data, and when the child
+# process is dead, its record will be reused by another child process.
+#
+# each record contains the following data:
+#
+# - pid of child process (4 bytes), 0 means the record is empty and can be used
+#   for a new child process
+#
+# - child start time (4 bytes)
+#
+# - number of requests that the child has processed (2 bytes)
+#
+# - current request's start time (4 bytes)
+#
+# - last update time (4 byte)
+#
+# - current state of child process (1 byte, ASCII character): "_" means idle,
+#   "R" is reading request, "W" is writing reply
+#
+# - reserved (1 byte)
+#
+# total 20 bytes per record.
+#
+# when a new daemon is started, the parent process truncates the scoreboard to 0
+# bytes. the scoreboard then will grow as new child processes are started. each
+# child process will find an empty record on the scoreboard and then only write
+# to that record for the rest of its lifetime. the parent usually only reads the
+# scoreboard file, but when a child process is dead/reaped it will clean the
+# scoreboard record of dead processes. the only time a scoreboard file needs to
+# be locked is when the new child process tries to occupy a new record (so that
+# two child processes do not get into race condition). at other times, a lock is
+# not needed.
+
 sub init_scoreboard {
     my ($self) = @_;
     return unless $self->{scoreboard_path};
@@ -251,25 +286,31 @@ sub init_scoreboard {
         or die "Can't initialize scoreboard path: $!";
 }
 
+# used by child process to update its state in the scoreboard file
 sub update_scoreboard {
-    my ($self, $state) = @_;
+    my ($self, $data) = @_;
     return unless $self->{_scoreboard_fh};
 
     my $lock;
 
-    if (defined $self->{_scoreboard_pos}) {
-    } else {
+    # if we haven't picked an empty record yet, pick now
+    if (!defined($self->{_scoreboard_recno})) {
         sysseek $self->{_scoreboard_fh}, 0, 0;
         my $rec;
-        my $i = 0;
+        $self->{_scoreboard_recno} = 0;
         while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
-            next unless length($rec) == $SC_RECSIZE;
-            my ($pid, $state, $ts) = unpack("NCN", $rec);
+            last if length($rec) == $SC_RECSIZE; # safety
+            my ($pid, $child_start_time, $num_reqs, $req_start_time,
+                $mtime, $state, $reserved) = unpack("NNSNNCC", $rec);
             $state = chr($state);
-            $i++;
-            next unless $pid == $$;
-            $self->{_scoreboard_pos} = ($i-1)*$SC_RECSIZE;
+            $self->{_scoreboard_recno}++;
+            last if !$pid; # empty record
         }
+        if (length($rec) != $SC_RECSIZE) {
+            # we have reached the end of file, so we should append a new record
+            # XXX
+        }
+
         if (!defined($self->{_scoreboard_pos})) {
             flock $self->{_scoreboard_fh}, 2;
             $lock++;
@@ -288,7 +329,8 @@ sub update_scoreboard {
     }
 }
 
-sub delete_process_from_scoreboard {
+# clean records of processes that no longer exist
+sub clean_scoreboard_from_stale_records {
     my ($self, $pid) = @_;
     return unless $self->{_scoreboard_fh};
 
