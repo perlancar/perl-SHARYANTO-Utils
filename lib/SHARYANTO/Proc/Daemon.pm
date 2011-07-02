@@ -39,6 +39,10 @@ If true, bails out if not running as root.
 
 =item * scoreboard_path => STR (default none)
 
+If not set, no scoreboard file will be created/updated. Scoreboard file is used
+to communicate between parent and child processes. Autoadjustment of number of
+processes, for example, requires this (see max_children for more details).
+
 =item * daemonize => BOOL (default 1)
 
 =item * prefork => INT (default 3, 0 means a nonforking/single-threaded daemon)
@@ -50,6 +54,9 @@ while serving requests, all children are busy, parent will automatically
 increase the number of children gradually until 'max_children'. If afterwards
 these children are idle, they will be killed off until there are 'prefork'
 number of children again.
+
+Note that for this to function, scoreboard_path must be defined since the parent
+needs to communicate with children.
 
 =item * auto_reload_check_every => INT (default undef, meaning never)
 
