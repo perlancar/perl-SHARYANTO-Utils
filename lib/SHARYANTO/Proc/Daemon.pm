@@ -327,6 +327,8 @@ sub update_scoreboard {
                 pack("NNSNNCC", $$, 0,0,0,0,0,0);
         } else {
             # occupy empty record with our pid
+            sysseek $self->{_scoreboard_fh},
+                $self->{_scoreboard_recno}*$SC_RECSIZE, 0;
             syswrite $self->{_scoreboard_fh}, pack("N", $$);
         }
         flock $self->{_scoreboard_fh}, 8;
