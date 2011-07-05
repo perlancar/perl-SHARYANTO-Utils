@@ -502,7 +502,7 @@ sub REAPER {
     my $pid = wait;
     for (@daemons) {
         delete $_->{children}{$pid};
-        $_->clean_scoreboard;
+        $_->clean_scoreboard($pid);
     }
 }
 
