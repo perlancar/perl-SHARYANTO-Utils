@@ -52,11 +52,11 @@ number of children processes to prefork.
 
 =item * max_children => INT (default 150)
 
-Initially the number of children spawned will follow the 'prefork' setting. If
-while serving requests, all children are busy, parent will automatically
-increase the number of children gradually until 'max_children'. If afterwards
-these children are idle, they will be killed off until there are 'prefork'
-number of children again.
+This is like the MaxClients setting in Apache webserver. Initially the number of
+children spawned will follow the 'prefork' setting. If while serving requests,
+all children are busy, parent will automatically increase the number of children
+gradually until 'max_children'. If afterwards these children are idle, they will
+be gradually killed off until there are 'prefork' number of children again.
 
 Note that for this to function, scoreboard_path must be defined since the parent
 needs to communicate with children.
