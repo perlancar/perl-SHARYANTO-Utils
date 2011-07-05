@@ -475,6 +475,7 @@ sub run {
                                 # pick oldest idle child and kill it
                                 my $pid = shift @pids;
                                 if ($pid) {
+                                    kill TERM => $pid;
                                     $res->{num_chilren}--;
                                     delete $res->{children}{$pid};
                                 }
