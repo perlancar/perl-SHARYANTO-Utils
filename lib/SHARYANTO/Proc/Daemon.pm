@@ -478,6 +478,7 @@ sub run {
                                     kill TERM => $pid;
                                     $res->{num_chilren}--;
                                     delete $res->{children}{$pid};
+                                    delete $self->{children}{$pid};
                                 }
                             }
                         }
