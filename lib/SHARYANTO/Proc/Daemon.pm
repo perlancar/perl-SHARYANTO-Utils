@@ -325,14 +325,16 @@ sub update_scoreboard {
             $self->{_scoreboard_recno}++;
             syswrite $self->{_scoreboard_fh},
                 pack("NNSNNCC", $$, 0,0,0,0,0,0);
+        } else {
+            # occupy empty record with our pid
+            syswrite $self->{_scoreboard_fh}, pack("N", $$);
         }
         flock $self->{_scoreboard_fh}, 8;
     }
     sysseek $self->{_scoreboard_fh},
-        $self->{_scoreboard_recno}*$SC_RECSIZE, 0;
+        $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0; # needn't write pid again
     syswrite $self->{_scoreboard_fh},
-        pack("NNSNNCC",
-             $pid || $$,
+        pack("NSNNCC",
              $data->{child_start_time} // 0,
              $data->{num_reqs} // 0,
              $data->{req_start_time} // 0,
