@@ -352,18 +352,22 @@ sub clean_scoreboard {
     my ($self, $child_pid) = @_;
     return unless $self->{_scoreboard_fh};
 
+    #warn "Cleaning scoreboard (pid $child_pid)\n";
     my $check_all = rand()*50 >= 49;
 
     my $rec;
     flock $self->{_scoreboard_fh}, 2;
     sysseek $self->{_scoreboard_fh}, 0, 0;
+    my $i = -1;
     while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
+        $i++;
         die "Abnormal scoreboard file size (not multiples of $SC_RECSIZE)"
             if length($rec) && length($rec) < $SC_RECSIZE; # safety
         my ($pid) = unpack("N", $rec);
         next if !$check_all && $pid != $child_pid;
         next if $check_all && kill(0, $pid);
-        syswrite($self->{_scoreboard_fh}, pack("N", 0));
+        sysseek $self->{_scoreboard_fh}, $i*$SC_RECSIZE;
+        syswrite $self->{_scoreboard_fh}, pack("N", 0);
         last unless $check_all;
     }
     flock $self->{_scoreboard_fh}, 8;
