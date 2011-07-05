@@ -329,9 +329,10 @@ sub update_scoreboard {
         flock $self->{_scoreboard_fh}, 8;
     }
     sysseek $self->{_scoreboard_fh},
-        $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0; # needn't write pid again
+        $self->{_scoreboard_recno}*$SC_RECSIZE, 0;
     syswrite $self->{_scoreboard_fh},
-        pack("NSNNCC",
+        pack("NNSNNCC",
+             $pid || $$,
              $data->{child_start_time} // 0,
              $data->{num_reqs} // 0,
              $data->{req_start_time} // 0,
