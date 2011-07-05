@@ -464,9 +464,9 @@ sub run {
                             $res->{num_children} > $self->{prefork}) {
                         $k++;
                         # sort by oldest idle
-                        my @pids = sort { $res->{children}{$a}->{mtime} <=>
-                                              $res->{children}{$b}->{mtime} }
-                            grep {$res->{children}{state} eq '_'}
+                        my @pids = sort { $res->{children}{$a}{mtime} <=>
+                                              $res->{children}{$b}{mtime} }
+                            grep {$res->{children}{$_}{state} eq '_'}
                                 keys %{$res->{children}};
                         for (1..$k*2) {
                             last if
