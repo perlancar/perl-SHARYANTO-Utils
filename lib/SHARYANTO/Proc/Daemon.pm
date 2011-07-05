@@ -323,7 +323,8 @@ sub update_scoreboard {
         $self->{_scoreboard_recno}++ if !defined($pid) || $pid;
         sysseek $self->{_scoreboard_fh},
             $self->{_scoreboard_recno}*$SC_RECSIZE, 0;
-        syswrite $self->{_scoreboard_fh}, pack("NNSNNCC", $$, 0,0,0,0,0,0);
+        syswrite $self->{_scoreboard_fh},
+            pack("NNSNNCC", $$, 0,0,0,0,ord("_"),0);
         flock $self->{_scoreboard_fh}, 8;
     }
     sysseek $self->{_scoreboard_fh},
@@ -332,6 +333,7 @@ sub update_scoreboard {
     sysread $self->{_scoreboard_fh}, $rec, $SC_RECSIZE-4;
     my ($child_start_time, $num_reqs, $req_start_time,
         $mtime, $state) = unpack("NSNNC", $rec);
+    $state = chr($state);
     sysseek $self->{_scoreboard_fh},
         $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0;
     syswrite $self->{_scoreboard_fh},
