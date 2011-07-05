@@ -413,29 +413,32 @@ sub run {
 sub make_new_child {
     my ($self) = @_;
 
-    # i don't understand this, ignoring
-    ## block signal for fork
-    #my $sigset = POSIX::SigSet->new(SIGINT);
-    #sigprocmask(SIG_BLOCK, $sigset)
-    #    or die "Can't block SIGINT for fork: $!\n";
+    # from perl cookbook: block signal for fork
+    my $sigset = POSIX::SigSet->new(SIGINT);
+    sigprocmask(SIG_BLOCK, $sigset)
+        or die "Can't block SIGINT for fork: $!\n";
 
     my $pid;
-    do { warn "Can't fork: $!"; return } unless defined ($pid = fork);
+    unless (defined ($pid = fork)) {
+        warn "Can't fork: $!";
+        sigprocmask(SIG_UNBLOCK, $sigset)
+            or die "Can't unblock SIGINT for fork: $!\n";
+        return;
+    }
 
     if ($pid) {
-        # i don't understand this, ignoring
-        ## Parent records the child's birth and returns.
-        #sigprocmask(SIG_UNBLOCK, $sigset)
-        #    or die "Can't unblock SIGINT for fork: $!\n";
+        # from perl cookbook: Parent records the child's birth and returns.
+        sigprocmask(SIG_UNBLOCK, $sigset)
+            or die "Can't unblock SIGINT for fork: $!\n";
+
         $self->{children}{$pid} = 1;
         return;
     } else {
-        # i don't understand this, ignoring
-        ## Child can *not* return from this subroutine.
-        #$SIG{INT} = 'DEFAULT';      # make SIGINT kill us as it did before
-        ## unblock signals
-        #sigprocmask(SIG_UNBLOCK, $sigset)
-        #    or die "Can't unblock SIGINT for fork: $!\n";
+        # from perl cookbook: Child can *not* return from this subroutine.
+        $SIG{INT} = 'DEFAULT';      # make SIGINT kill us as it did before
+        sigprocmask(SIG_UNBLOCK, $sigset)
+            or die "Can't unblock SIGINT for fork: $!\n";
+
         $self->child_sig_handlers;
         $self->set_label('child');
         $self->{main_loop}->();
@@ -462,6 +465,7 @@ sub is_parent {
 }
 
 sub shutdown {
+    local($SIG{CHLD}) = 'IGNORE'; # from perl cookbook
     my ($self, $reason, $exitcode) = @_;
     $exitcode //= 1;
 
