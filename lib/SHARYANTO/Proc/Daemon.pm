@@ -47,6 +47,9 @@ processes, for example, requires this (see max_children for more details).
 
 =item * prefork => INT (default 3, 0 means a nonforking/single-threaded daemon)
 
+This is like the StartServers setting in Apache webserver (the prefork MPM), the
+number of children processes to prefork.
+
 =item * max_children => INT (default 150)
 
 Initially the number of children spawned will follow the 'prefork' setting. If
