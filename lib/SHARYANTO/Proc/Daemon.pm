@@ -421,6 +421,9 @@ sub run {
 
         # and maintain the population
         my $i = 0;
+        my $j = 0; # number of increments of child when busy
+        my $k = 0; # number of decrements of child when idle
+        my $max_children_warned;
         while (1) {
             #sleep; # wait for a signal (i.e., child's death)
             sleep 1;
@@ -429,9 +432,56 @@ sub run {
                 $self->check_reload_self;
                 $i = 0;
             }
+            # top up child pool until at least 'prefork'
             for (my $i = keys(%{$self->{children}});
                  $i < $self->{prefork}; $i++) {
                 $self->make_new_child(); # top up the child pool
+            }
+            # if busy, autoadjust child pool until at least 'max_children', and
+            # decrease it again when idle
+            if (rand()*4 >= 3) {
+                my $res = $self->read_scoreboard;
+                if ($res) {
+                    if ($res->{num_busy} && $res->{num_idle} <= 1) {
+                        warn "max_children ($self->{max_children} reached, ".
+                            "consider increasing it\n" if
+                                $res->{num_children} >= $self->{max_children}
+                                    && !$max_children_warned++;
+                        $j++;
+                        for (1..$j*2) {
+                            last if
+                                $res->{num_children} >= $self->{max_children};
+                            $self->make_new_child();
+                            $res->{num_chilren}++;
+                        }
+                    } else {
+                        $j = 0;
+                    }
+
+                    if ($res->{num_idle} >= 2 &&
+                            $res->{num_children} > $self->{prefork}) {
+                        $k++;
+                        # sort by oldest idle
+                        my @pids = sort { $res->{children}{$a}->{mtime} <=>
+                                              $res->{children}{$b}->{mtime} }
+                            grep {$res->{children}{state} eq '_'}
+                                keys %{$res->{children}};
+                        for (1..$k*2) {
+                            last if
+                                $res->{num_children} <= $self->{prefork};
+                            if (@pids) {
+                                # pick oldest idle child and kill it
+                                my $pid = shift @pids;
+                                if ($pid) {
+                                    $res->{num_chilren}--;
+                                    delete $res->{children}{$pid};
+                                }
+                            }
+                        }
+                    } else {
+                        $k = 0;
+                    }
+                }
             }
         }
     } else {
