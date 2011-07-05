@@ -210,9 +210,9 @@ sub parent_sig_handlers {
     die "BUG: Setting parent_sig_handlers must be done in parent"
         if $self->{parent_pid} ne $$;
 
-    $SIG{INT}  = sub { $self->shutdown("INT")  };
-    $SIG{TERM} = sub { $self->shutdown("TERM") };
-    #$SIG{HUP} = \&reload_server;
+    $SIG{INT}  = \&INT_HANDLER;
+    $SIG{TERM} = \&TERM_HANDLER;
+    #$SIG{HUP} = \&RELOAD_HANDLER;
 
     $SIG{CHLD} = \&REAPER;
 }
@@ -485,9 +485,7 @@ sub is_parent {
 }
 
 sub shutdown {
-    local($SIG{CHLD}) = 'IGNORE'; # from perl cookbook
-    my ($self, $reason, $exitcode) = @_;
-    $exitcode //= 1;
+    my ($self, $reason) = @_;
 
     warn "Shutting down daemon".($reason ? " (reason=$reason)" : "")."\n";
     $self->{before_shutdown}->() if $self->{before_shutdown};
@@ -497,8 +495,6 @@ sub shutdown {
         $self->unlink_pidfile;
         $self->close_logs;
     }
-
-    exit $exitcode;
 }
 
 sub REAPER {
@@ -506,10 +502,25 @@ sub REAPER {
     my $pid = wait;
     for (@daemons) {
         delete $_->{children}{$pid};
+        $_->clean_scoreboard;
     }
 }
 
-#    check_reload_self() if (rand()*150 < 1.0); # +- every 150 secs or reqs
+sub INT_HANDLER {
+    local($SIG{CHLD}) = 'IGNORE'; # from perl cookbook
+    for (@daemons) {
+        $_->shutdown("INT");
+    }
+    exit 1;
+}
+
+sub TERM_HANDLER {
+    local($SIG{CHLD}) = 'IGNORE'; # from perl cookbook
+    for (@daemons) {
+        $_->shutdown("TERM");
+    }
+    exit 1;
+}
 
 sub check_reload_self {
     my ($self) = @_;
