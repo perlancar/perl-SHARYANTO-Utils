@@ -420,7 +420,7 @@ sub make_new_child {
     #    or die "Can't block SIGINT for fork: $!\n";
 
     my $pid;
-    die "fork: $!" unless defined ($pid = fork);
+    do { warn "Can't fork: $!"; return } unless defined ($pid = fork);
 
     if ($pid) {
         # i don't understand this, ignoring
