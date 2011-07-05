@@ -240,7 +240,6 @@ sub init {
     }
 
     $self->daemonize if $self->{daemonize};
-    $self->init_scoreboard;
     warn "Daemon (PID $$) started at ", scalar(localtime), "\n";
 }
 
@@ -411,6 +410,7 @@ sub run {
     $self->init;
     $self->set_label('parent');
     $self->{after_init}->() if $self->{after_init};
+    $self->init_scoreboard;
 
     if ($self->{prefork}) {
         # prefork children
