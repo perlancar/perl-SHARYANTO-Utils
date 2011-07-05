@@ -302,7 +302,7 @@ sub update_scoreboard {
     for (keys %$data) {
         die "BUG: Unknown key in data: $_" unless
             /\A(?:child_start_time|num_reqs|req_start_time|
-                 mtime|state)\z/x;
+                 state)\z/x;
     }
 
     # if we haven't picked an empty record yet, pick now
@@ -334,13 +334,17 @@ sub update_scoreboard {
     }
     sysseek $self->{_scoreboard_fh},
         $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0; # needn't write pid again
+    my ($child_start_time, $num_reqs, $req_start_time,
+        $mtime, $state) = unpack("NSNNC", $rec);
+    sysseek $self->{_scoreboard_fh},
+        $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0;
     syswrite $self->{_scoreboard_fh},
         pack("NSNNCC",
-             $data->{child_start_time} // 0,
-             $data->{num_reqs} // 0,
-             $data->{req_start_time} // 0,
-             $data->{mtime} // time(),
-             ord($data->{state} // "_"),
+             $data->{child_start_time} // $child_start_time // 0,
+             $data->{num_reqs} // $num_reqs // 0,
+             $data->{req_start_time} // $req_start_time // 0,
+             time(),
+             ord($data->{state} // $state // "_"),
              0);
 }
 
@@ -383,7 +387,7 @@ sub read_scoreboard {
         die "Abnormal scoreboard file size (not multiples of $SC_RECSIZE)"
             if length($rec) && length($rec) < $SC_RECSIZE; # safety
         my ($pid, $child_start_time, $num_reqs, $req_start_time,
-            $mtime, $state, $reserved) = unpack("NNSNNCC", $rec);
+            $mtime, $state) = unpack("NNSNNC", $rec);
         $state = chr($state);
         next unless $pid;
         $res->{num_children}++;
