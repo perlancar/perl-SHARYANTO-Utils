@@ -328,16 +328,17 @@ sub update_scoreboard {
         flock $self->{_scoreboard_fh}, 8;
     }
     sysseek $self->{_scoreboard_fh},
-        $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0; # needn't write pid again
+        $self->{_scoreboard_recno}*$SC_RECSIZE, 0; # needn't write pid again
     my $rec;
-    sysread $self->{_scoreboard_fh}, $rec, $SC_RECSIZE-4;
-    my ($child_start_time, $num_reqs, $req_start_time,
-        $mtime, $state) = unpack("NSNNC", $rec);
+    sysread $self->{_scoreboard_fh}, $rec, $SC_RECSIZE;
+    my ($pid, $child_start_time, $num_reqs, $req_start_time,
+        $mtime, $state) = unpack("NNSNNC", $rec);
     $state = chr($state);
     sysseek $self->{_scoreboard_fh},
-        $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0;
+        $self->{_scoreboard_recno}*$SC_RECSIZE, 0;
     syswrite $self->{_scoreboard_fh},
-        pack("NSNNCC",
+        pack("NNSNNCC",
+             $pid,
              $data->{child_start_time} // $child_start_time // 0,
              $data->{num_reqs} // $num_reqs // 0,
              $data->{req_start_time} // $req_start_time // 0,
@@ -368,7 +369,8 @@ sub clean_scoreboard {
         next if !$check_all && $pid != $child_pid;
         next if $check_all && kill(0, $pid);
         sysseek $self->{_scoreboard_fh}, $i*$SC_RECSIZE, 0;
-        syswrite $self->{_scoreboard_fh}, pack("N", 0);
+        syswrite $self->{_scoreboard_fh},
+            pack("NNSNNCC", 0, 0,0,0,0,ord("_"),0);
         last unless $check_all;
     }
     flock $self->{_scoreboard_fh}, 8;
@@ -435,9 +437,12 @@ sub run {
                 $i = 0;
             }
             # top up child pool until at least 'prefork'
-            for (my $i = keys(%{$self->{children}});
-                 $i < $self->{prefork}; $i++) {
-                $self->make_new_child(); # top up the child pool
+            if (keys(%{$self->{children}}) < $self->{prefork}) {
+                warn "Topping up child pool to $self->{prefork}\n";
+                for (my $i = keys(%{$self->{children}});
+                     $i < $self->{prefork}; $i++) {
+                    $self->make_new_child(); # top up the child pool
+                }
             }
             # if busy, autoadjust child pool until at least 'max_children', and
             # decrease it again when idle
@@ -450,6 +455,8 @@ sub run {
                                 $res->{num_children} >= $self->{max_children}
                                     && !$max_children_warned++;
                         $j++;
+                        warn "Autoadjust: increase number of children ".
+                            "($j*2, $res->{num_children} -> .)\n";
                         for (1..$j*2) {
                             last if
                                 $res->{num_children} >= $self->{max_children};
@@ -460,9 +467,11 @@ sub run {
                         $j = 0;
                     }
 
-                    if ($res->{num_idle} >= 2 &&
+                    if (0 && $res->{num_idle} >= 3 &&
                             $res->{num_children} > $self->{prefork}) {
                         $k++;
+                        warn "Autoadjust: decrease number of children ".
+                            "($k*2, $res->{num_children} -> .)\n";
                         # sort by oldest idle
                         my @pids = sort { $res->{children}{$a}{mtime} <=>
                                               $res->{children}{$b}{mtime} }
@@ -479,6 +488,8 @@ sub run {
                                     $res->{num_chilren}--;
                                     delete $res->{children}{$pid};
                                     delete $self->{children}{$pid};
+                                    warn "Killed process $pid ".
+                                        "(num_children=$res->{num_children})\n";
                                 }
                             }
                         }
