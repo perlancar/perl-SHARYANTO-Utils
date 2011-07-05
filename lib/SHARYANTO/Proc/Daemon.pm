@@ -366,7 +366,7 @@ sub clean_scoreboard {
         my ($pid) = unpack("N", $rec);
         next if !$check_all && $pid != $child_pid;
         next if $check_all && kill(0, $pid);
-        sysseek $self->{_scoreboard_fh}, $i*$SC_RECSIZE;
+        sysseek $self->{_scoreboard_fh}, $i*$SC_RECSIZE, 0;
         syswrite $self->{_scoreboard_fh}, pack("N", 0);
         last unless $check_all;
     }
