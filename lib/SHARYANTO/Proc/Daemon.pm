@@ -290,7 +290,7 @@ sub init_scoreboard {
         or die "Can't initialize scoreboard path: $!";
     # for safety against full disk, pre-allocate some empty records
     syswrite $self->{_scoreboard_fh},
-        "\x00" x $SC_RECSIZE*($self->max_children+1);
+        "\x00" x $SC_RECSIZE*($self->{max_children}+1);
 }
 
 # used by child process to update its state in the scoreboard file.
