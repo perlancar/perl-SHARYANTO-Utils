@@ -244,7 +244,7 @@ sub init {
     warn "Daemon (PID $$) started at ", scalar(localtime), "\n";
 }
 
-# XXX use shared memory for better performance
+# XXX use shared memory scoreboard for better performance
 my $SC_RECSIZE = 20;
 
 # the scoreboard file contains fixed-size records, $SC_RECSIZE bytes each. each
