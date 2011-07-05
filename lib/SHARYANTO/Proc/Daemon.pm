@@ -321,6 +321,7 @@ sub update_scoreboard {
         }
         # we need to make a new record
         $self->{_scoreboard_recno}++ if !defined($pid) || $pid;
+        sysseek $self->{_scoreboard_fh}, $self->{_scoreboard_recno}*$SC_RECSIZE;
         syswrite $self->{_scoreboard_fh}, pack("NNSNNCC", $$, 0,0,0,0,0,0);
         flock $self->{_scoreboard_fh}, 8;
     }
