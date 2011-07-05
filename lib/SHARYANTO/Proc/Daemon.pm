@@ -444,7 +444,7 @@ sub run {
                 if ($res) {
                     if ($res->{num_busy} && $res->{num_idle} <= 1) {
                         warn "max_children ($self->{max_children} reached, ".
-                            "consider increasing it\n" if
+                            "consider increasing it)\n" if
                                 $res->{num_children} >= $self->{max_children}
                                     && !$max_children_warned++;
                         $j++;
