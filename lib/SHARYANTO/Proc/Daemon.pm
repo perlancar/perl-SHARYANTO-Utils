@@ -319,17 +319,9 @@ sub update_scoreboard {
             last if !$pid; # empty record
             $self->{_scoreboard_recno}++;
         }
-        if (!defined($pid) || $pid) {
-            # we need to make a new record
-            $self->{_scoreboard_recno}++;
-            syswrite $self->{_scoreboard_fh},
-                pack("NNSNNCC", $$, 0,0,0,0,0,0);
-        } else {
-            # occupy empty record with our pid
-            sysseek $self->{_scoreboard_fh},
-                $self->{_scoreboard_recno}*$SC_RECSIZE, 0;
-            syswrite $self->{_scoreboard_fh}, pack("N", $$);
-        }
+        # we need to make a new record
+        $self->{_scoreboard_recno}++ if !defined($pid) || $pid;
+        syswrite $self->{_scoreboard_fh}, pack("NNSNNCC", $$, 0,0,0,0,0,0);
         flock $self->{_scoreboard_fh}, 8;
     }
     sysseek $self->{_scoreboard_fh},
