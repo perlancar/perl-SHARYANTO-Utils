@@ -467,6 +467,7 @@ sub run {
                         $j = 0;
                     }
 
+                    # disable temporarily, not yet working properly
                     if (0 && $res->{num_idle} >= 3 &&
                             $res->{num_children} > $self->{prefork}) {
                         $k++;
