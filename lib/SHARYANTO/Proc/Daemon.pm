@@ -334,6 +334,7 @@ sub update_scoreboard {
     }
     sysseek $self->{_scoreboard_fh},
         $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0; # needn't write pid again
+    my $rec = sysread $self->{_scoreboard_fh}, $SC_RECSIZE-4;
     my ($child_start_time, $num_reqs, $req_start_time,
         $mtime, $state) = unpack("NSNNC", $rec);
     sysseek $self->{_scoreboard_fh},
