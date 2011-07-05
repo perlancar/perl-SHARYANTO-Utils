@@ -298,6 +298,14 @@ sub update_scoreboard {
     my ($self, $data) = @_;
     return unless $self->{_scoreboard_fh};
 
+    # XXX schema
+    die "BUG: data must be hashref" unless ref($data) eq 'HASH';
+    for (keys %$data) {
+        die "BUG: Unknown key in data: $_" unless
+            /\A(?:child_start_time|num_reqs|req_start_time|
+                 mtime|state)\z/x;
+    }
+
     # if we haven't picked an empty record yet, pick now
     if (!defined($self->{_scoreboard_recno})) {
         flock $self->{_scoreboard_fh}, 2;
