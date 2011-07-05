@@ -284,86 +284,90 @@ my $SC_RECSIZE = 20;
 sub init_scoreboard {
     my ($self) = @_;
     return unless $self->{scoreboard_path};
+
     sysopen($self->{_scoreboard_fh}, $self->{scoreboard_path},
             O_RDWR | O_CREAT | O_TRUNC)
         or die "Can't initialize scoreboard path: $!";
+    # for safety against full disk, pre-allocate some empty records
+    syswrite $self->{_scoreboard_fh},
+        "\x00" x $SC_RECSIZE*($self->max_children+1);
 }
 
-# used by child process to update its state in the scoreboard file
+# used by child process to update its state in the scoreboard file.
 sub update_scoreboard {
     my ($self, $data) = @_;
     return unless $self->{_scoreboard_fh};
 
-    my $lock;
-
     # if we haven't picked an empty record yet, pick now
     if (!defined($self->{_scoreboard_recno})) {
+        flock $self->{_scoreboard_fh}, 2;
         sysseek $self->{_scoreboard_fh}, 0, 0;
         my $rec;
         $self->{_scoreboard_recno} = 0;
+        my $pid;
         while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
-            last if length($rec) == $SC_RECSIZE; # safety
-            my ($pid, $child_start_time, $num_reqs, $req_start_time,
-                $mtime, $state, $reserved) = unpack("NNSNNCC", $rec);
-            $state = chr($state);
-            $self->{_scoreboard_recno}++;
+            die "Abnormal scoreboard file size (not multiples of $SC_RECSIZE)"
+                if length($rec) && length($rec) < $SC_RECSIZE; # safety
+            $pid = unpack("N", $rec);
             last if !$pid; # empty record
+            $self->{_scoreboard_recno}++;
         }
-        if (length($rec) != $SC_RECSIZE) {
-            # we have reached the end of file, so we should append a new record
-            # XXX
+        if (!defined($pid) || $pid) {
+            # we need to make a new record
+            $self->{_scoreboard_recno}++;
+            syswrite $self->{_scoreboard_fh},
+                pack("NNSNNCC", $$, 0,0,0,0,0,0);
         }
-
-        if (!defined($self->{_scoreboard_pos})) {
-            flock $self->{_scoreboard_fh}, 2;
-            $lock++;
-            $self->{_scoreboard_pos} = $i*$SC_RECSIZE;
-        }
-    }
-    if ($lock) {
-        syswrite($self->{_scoreboard_fh},
-                 sprintf("%-${SC_RECSIZE}s",
-                         pack("NCN", $$, ord($state), time())));
         flock $self->{_scoreboard_fh}, 8;
-    } else {
-        sysseek $self->{_scoreboard_fh}, $self->{_scoreboard_pos}+4, 0;
-        syswrite($self->{_scoreboard_fh},
-                 pack("CN", ord($state), time()));
     }
+    sysseek $self->{_scoreboard_fh},
+        $self->{_scoreboard_recno}*$SC_RECSIZE+4, 0; # needn't write pid again
+    syswrite $self->{_scoreboard_fh},
+        pack("NSNNCC",
+             $data->{child_start_time} // 0,
+             $data->{num_reqs} // 0,
+             $data->{req_start_time} // 0,
+             $data->{mtime} // time(),
+             ord($data->{state} // "_"),
+             0);
 }
 
-# clean records of processes that no longer exist
-sub clean_scoreboard_from_stale_records {
-    my ($self, $pid) = @_;
+# clean records from process(es) that no longer exist. called by parent after
+# being notified that a child is dead. once in a while, clean not only $pid but
+# also check all records of dead processes.
+sub clean_scoreboard {
+    my ($self, $child_pid) = @_;
     return unless $self->{_scoreboard_fh};
 
+    my $check_all = rand()*50 >= 49;
+
     my $rec;
+    flock $self->{_scoreboard_fh}, 2;
     sysseek $self->{_scoreboard_fh}, 0, 0;
     while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
-        next unless length($rec) == $SC_RECSIZE;
-        my ($pid, $state, $ts) = unpack("NCN", $rec);
-        $state = chr($state);
-        next unless $pid == $$ ||
-            !kill(0, $pid); # also clean pids that are no longer there
-        flock $self->{_scoreboard_fh}, 2;
-        syswrite($self->{_scoreboard_fh},
-                 sprintf("%-${SC_RECSIZE}s",
-                         pack("NCN", 0, ".", time())));
-        flock $self->{_scoreboard_fh}, 8;
-        last;
+        die "Abnormal scoreboard file size (not multiples of $SC_RECSIZE)"
+            if length($rec) && length($rec) < $SC_RECSIZE; # safety
+        my ($pid) = unpack("N", $rec);
+        next if !$check_all && $pid != $child_pid;
+        next if $check_all && kill(0, $pid);
+        syswrite($self->{_scoreboard_fh}, pack("N", 0));
+        last unless $check_all;
     }
+    flock $self->{_scoreboard_fh}, 8;
 }
 
-sub summarize_scoreboard {
+sub read_scoreboard {
     my ($self) = @_;
     return unless $self->{_scoreboard_fh};
 
     my $rec;
-    my $res = {num_children=>0, num_busy=>0, num_idle=>0};
+    my $res = {children=>{}, num_children=>0, num_busy=>0, num_idle=>0};
     sysseek $self->{_scoreboard_fh}, 0, 0;
     while (sysread($self->{_scoreboard_fh}, $rec, $SC_RECSIZE)) {
-        next unless length($rec) == $SC_RECSIZE;
-        my ($pid, $state, $ts) = unpack("NCN", $rec);
+        die "Abnormal scoreboard file size (not multiples of $SC_RECSIZE)"
+            if length($rec) && length($rec) < $SC_RECSIZE; # safety
+        my ($pid, $child_start_time, $num_reqs, $req_start_time,
+            $mtime, $state, $reserved) = unpack("NNSNNCC", $rec);
         $state = chr($state);
         next unless $pid;
         $res->{num_children}++;
@@ -372,6 +376,14 @@ sub summarize_scoreboard {
         } else {
             $res->{num_busy}++;
         }
+        $res->{children}{$pid} = {
+            pid=>$pid,
+            child_start_time=>$child_start_time,
+            num_reqs=>$num_reqs,
+            req_start_time=>$req_start_time,
+            mtime=>$mtime,
+            state=>$state,
+        };
     }
     $res;
 }
