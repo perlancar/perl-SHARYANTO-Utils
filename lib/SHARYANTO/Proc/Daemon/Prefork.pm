@@ -1,4 +1,4 @@
-package SHARYANTO::Proc::Daemon;
+package SHARYANTO::Proc::Daemon::Prefork;
 # ABSTRACT: Create preforking, autoreloading daemon
 
 =for Pod::Coverage .
