@@ -1,5 +1,4 @@
 package SHARYANTO::HTML::Extract::ImageLinks;
-# ABSTRACT: Extract image links from HTML document
 
 use 5.010;
 use strict;
@@ -11,6 +10,8 @@ use URI::URL;
 use Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(extract_image_links);
+
+# VERSION
 
 our %SPEC;
 
@@ -67,6 +68,7 @@ sub extract_image_links {
 }
 
 1;
+# ABSTRACT: Extract image links from HTML document
 __END__
 
 =head1 FUNCTIONS

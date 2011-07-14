@@ -1,9 +1,4 @@
 package SHARYANTO::Proc::Daemon::Prefork;
-# ABSTRACT: Create preforking, autoreloading daemon
-
-=for Pod::Coverage .
-
-=cut
 
 use 5.010;
 use strict;
@@ -15,80 +10,11 @@ use IO::Select;
 use POSIX;
 use Symbol;
 
+# VERSION
+
 # --- globals
 
 my @daemons; # list of all daemons
-
-=head1 METHODS
-
-=head2 new(%args)
-
-Arguments:
-
-=over 4
-
-=item * run_as_root => BOOL (default 1)
-
-If true, bails out if not running as root.
-
-=item * error_log_path (required if daemonize=1)
-
-=item * access_log_path => STR (required if daemonize=1)
-
-=item * pid_path* => STR
-
-=item * scoreboard_path => STR (default none)
-
-If not set, no scoreboard file will be created/updated. Scoreboard file is used
-to communicate between parent and child processes. Autoadjustment of number of
-processes, for example, requires this (see max_children for more details).
-
-=item * daemonize => BOOL (default 1)
-
-=item * prefork => INT (default 3, 0 means a nonforking/single-threaded daemon)
-
-This is like the StartServers setting in Apache webserver (the prefork MPM), the
-number of children processes to prefork.
-
-=item * max_children => INT (default 150)
-
-This is like the MaxClients setting in Apache webserver. Initially the number of
-children spawned will follow the 'prefork' setting. If while serving requests,
-all children are busy, parent will automatically increase the number of children
-gradually until 'max_children'. If afterwards these children are idle, they will
-be gradually killed off until there are 'prefork' number of children again.
-
-Note that for this to function, scoreboard_path must be defined since the parent
-needs to communicate with children.
-
-=item * auto_reload_check_every => INT (default undef, meaning never)
-
-In seconds.
-
-=item * auto_reload_handler => CODEREF (required if auto_reload_check_every is set)
-
-=item * after_init => CODEREF (default none)
-
-Run after the daemon initializes itself (daemonizes, writes PID file, etc),
-before spawning children. You usually bind to sockets here (if your daemon is a
-network server).
-
-=item * main_loop* => CODEREF
-
-Run at the beginning of each child process. This is the main loop for your
-daemon. You usually do this in your main loop routine:
-
- for(my $i=1; $i<=$MAX_REQUESTS_PER_CHILD; $i++) {
-     # accept loop, or process job loop
- }
-
-=item * before_shutdown => CODEREF (optional)
-
-Run before killing children and shutting down.
-
-=back
-
-=cut
 
 sub new {
     my ($class, %args) = @_;
@@ -640,3 +566,78 @@ sub check_reload_self {
 }
 
 1;
+# ABSTRACT: Create preforking, autoreloading daemon
+
+=for Pod::Coverage .
+
+=head1 METHODS
+
+=head2 new(%args)
+
+Arguments:
+
+=over 4
+
+=item * run_as_root => BOOL (default 1)
+
+If true, bails out if not running as root.
+
+=item * error_log_path (required if daemonize=1)
+
+=item * access_log_path => STR (required if daemonize=1)
+
+=item * pid_path* => STR
+
+=item * scoreboard_path => STR (default none)
+
+If not set, no scoreboard file will be created/updated. Scoreboard file is used
+to communicate between parent and child processes. Autoadjustment of number of
+processes, for example, requires this (see max_children for more details).
+
+=item * daemonize => BOOL (default 1)
+
+=item * prefork => INT (default 3, 0 means a nonforking/single-threaded daemon)
+
+This is like the StartServers setting in Apache webserver (the prefork MPM), the
+number of children processes to prefork.
+
+=item * max_children => INT (default 150)
+
+This is like the MaxClients setting in Apache webserver. Initially the number of
+children spawned will follow the 'prefork' setting. If while serving requests,
+all children are busy, parent will automatically increase the number of children
+gradually until 'max_children'. If afterwards these children are idle, they will
+be gradually killed off until there are 'prefork' number of children again.
+
+Note that for this to function, scoreboard_path must be defined since the parent
+needs to communicate with children.
+
+=item * auto_reload_check_every => INT (default undef, meaning never)
+
+In seconds.
+
+=item * auto_reload_handler => CODEREF (required if auto_reload_check_every is set)
+
+=item * after_init => CODEREF (default none)
+
+Run after the daemon initializes itself (daemonizes, writes PID file, etc),
+before spawning children. You usually bind to sockets here (if your daemon is a
+network server).
+
+=item * main_loop* => CODEREF
+
+Run at the beginning of each child process. This is the main loop for your
+daemon. You usually do this in your main loop routine:
+
+ for(my $i=1; $i<=$MAX_REQUESTS_PER_CHILD; $i++) {
+     # accept loop, or process job loop
+ }
+
+=item * before_shutdown => CODEREF (optional)
+
+Run before killing children and shutting down.
+
+=back
+
+=cut
+

@@ -1,5 +1,4 @@
 package SHARYANTO::Text::Prompt;
-# ABSTRACT: Prompt user question
 
 use 5.010;
 use strict;
@@ -9,25 +8,7 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(prompt);
 
-=head1 FUNCTIONS
-
-=head2 prompt($text, \%opts)
-
-Options:
-
-=over 4
-
-=item * var => \$var
-
-=item * required => \$var
-
-=item * default => VALUE
-
-=item * regex => REGEX
-
-=back
-
-=cut
+# VERSION
 
 sub prompt {
     my ($text, $opts) = @_;
@@ -73,3 +54,25 @@ sub prompt {
 }
 
 1;
+# ABSTRACT: Prompt user question
+
+=head1 FUNCTIONS
+
+=head2 prompt($text, \%opts)
+
+Options:
+
+=over 4
+
+=item * var => \$var
+
+=item * required => \$var
+
+=item * default => VALUE
+
+=item * regex => REGEX
+
+=back
+
+=cut
+

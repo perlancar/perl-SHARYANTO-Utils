@@ -1,5 +1,4 @@
 package SHARYANTO::YAML::Any;
-# ABSTRACT: Pick a YAML implementation and use it.
 
 # NOTE: temporary namespace, will eventually be refactored, tidied up, and sent
 # to a more proper namespace.
@@ -18,6 +17,7 @@ use YAML::Syck;
 $YAML::Syck::ImplicitTyping = 1;
 
 1;
+# ABSTRACT: Pick a YAML implementation and use it.
 __END__
 
 =for Pod::Coverage .*

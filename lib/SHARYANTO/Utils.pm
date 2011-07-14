@@ -1,7 +1,9 @@
 package SHARYANTO::Utils;
-# ABSTRACT: SHARYANTO's temporary namespace for various routines
+
+# VERSION
 
 1;
+# ABSTRACT: SHARYANTO's temporary namespace for various routines
 __END__
 
 =head1 FAQ

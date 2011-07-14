@@ -1,12 +1,11 @@
 package SHARYANTO::Proc::ChildError;
-# ABSTRACT: Explain process child error
 
 use 5.010;
 require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(explain_child_error);
 
-# taken from perldoc -f system
+# VERSION
 
 sub explain_child_error {
     my $e = shift // $?;
@@ -24,3 +23,17 @@ sub explain_child_error {
 }
 
 1;
+# ABSTRACT: Explain process child error
+
+=head1 FUNCTIONS
+
+=head2 explain_child_error(INT) => STR
+
+Taken from perldoc -f system. Converts error number to something like one of the
+following:
+
+ failed to execute: -1
+ died with signal 15, with coredump
+ exited with value 3
+
+=cut

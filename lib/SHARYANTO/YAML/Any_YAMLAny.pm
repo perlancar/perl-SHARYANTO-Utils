@@ -1,5 +1,4 @@
 package SHARYANTO::YAML::Any;
-# Pick a YAML implementation and use it.
 
 # NOTE: temporary namespace, will eventually be refactored, tidied up, and sent
 # to a more proper namespace.
@@ -130,14 +129,11 @@ sub croak {
 }
 
 1;
-
-
 __END__
-=pod
 
 =head1 NAME
 
-SHARYANTO::YAML::Any - SHARYANTO::YAML::Any - Pick a YAML implementation and use it.
+SHARYANTO::YAML::Any - Pick a YAML implementation and use it.
 
 =head1 VERSION
 

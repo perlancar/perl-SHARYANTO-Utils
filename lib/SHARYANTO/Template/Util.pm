@@ -1,5 +1,4 @@
 package SHARYANTO::Template::Util;
-# ABSTRACT: Recursively process .tt files
 
 use 5.010;
 require Exporter;
@@ -9,6 +8,8 @@ our @EXPORT_OK = qw(process_tt_recursive);
 use File::Find;
 use File::Slurp;
 use Template::Tiny;
+
+# VERSION
 
 # recursively find *.tt and process them. can optionally delete the *.tt files
 # after processing.
@@ -31,3 +32,4 @@ sub process_tt_recursive {
 }
 
 1;
+# ABSTRACT: Recursively process .tt files
