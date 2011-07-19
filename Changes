@@ -1,5 +1,13 @@
 Revision history for SHARYANTO-Utils
 
+0.04    2011-07-19
+
+        [INCOMPATIBLE CHANGES]
+
+        - Proc::Daemon::Prefork: Rename 'run_as_root' to 'require_root' (less
+          ambiguity), now defaults to 0.
+
+
 0.03    2011-07-08
 
         [INCOMPATIBLE CHANGES]
