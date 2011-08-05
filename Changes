@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Utils
 
+0.05    2011-08-05
+
+        - Proc::Daemon::Prefork: 'access_log_path' and 'error_log_path' are now
+          optional.
+
+
 0.04    2011-07-19
 
         [INCOMPATIBLE CHANGES]
