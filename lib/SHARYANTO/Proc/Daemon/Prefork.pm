@@ -84,16 +84,17 @@ sub kill_running {
 sub open_logs {
     my ($self) = @_;
 
-    $self->{error_log_path} or die "BUG: Please specify error_log_path";
-    open my($fhe), ">>", $self->{error_log_path}
-        or die "Cannot open error log file $self->{error_log_path}: $!\n";
-    $self->{_error_log} = $fhe;
+    if ($self->{error_log_path}) {
+        open my($fhe), ">>", $self->{error_log_path}
+            or die "Cannot open error log file $self->{error_log_path}: $!\n";
+        $self->{_error_log} = $fhe;
+    }
 
-    $self->{access_log_path} or die "BUG: Please specify access_log_path";
-    open my($fha), ">>", $self->{access_log_path}
-        or die "Cannot open access log file $self->{access_log_path}: $!\n";
-    $self->{_access_log} = $fha;
-
+    if ($self->{access_log_path}) {
+        open my($fha), ">>", $self->{access_log_path}
+            or die "Cannot open access log file $self->{access_log_path}: $!\n";
+        $self->{_access_log} = $fha;
+    }
 }
 
 sub close_logs {
