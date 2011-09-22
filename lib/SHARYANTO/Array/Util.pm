@@ -39,3 +39,13 @@ $SPEC{match_regex_or_array} = $SPEC{match_array_or_regex};
 
 1;
 # ABSTRACT: Array-related utilities
+
+=head1 SYNOPSIS
+
+
+=head1 DESCRIPTION
+
+
+=head1 FUNCTIONS
+
+None are exported by default, but they are exportable.
