@@ -14,7 +14,7 @@ sub match_array_or_regex {
     my $ref = ref($haystack);
     if ($ref eq 'Regexp') {
         return $needle =~ $haystack;
-    } elsif ($ref eq 'ARRAY') [
+    } elsif ($ref eq 'ARRAY') {
         return $needle ~~ @$haystack;
     } else {
         die "Can't match when haystack is a $ref";
