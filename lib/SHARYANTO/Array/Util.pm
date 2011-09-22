@@ -1,6 +1,10 @@
 package SHARYANTO::Array::Util;
 
 use 5.010;
+use strict;
+use warnings;
+use Data::Clone;
+
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(match_array_or_regex match_regex_or_array);
@@ -35,7 +39,8 @@ sub match_array_or_regex {
 }
 
 *match_regex_or_array = \&match_array_or_regex;
-$SPEC{match_regex_or_array} = $SPEC{match_array_or_regex};
+$SPEC{match_regex_or_array} = clone $SPEC{match_array_or_regex};
+$SPEC{match_regex_or_array}{summary} = 'Alias for match_array_or_regex';
 
 1;
 # ABSTRACT: Array-related utilities
