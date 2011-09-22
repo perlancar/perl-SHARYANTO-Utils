@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.06    2011-09-22
+
+        Add SHARYANTO::Array::Util.
+
+
 0.05    2011-08-05
 
         - Proc::Daemon::Prefork: 'access_log_path' and 'error_log_path' are now
