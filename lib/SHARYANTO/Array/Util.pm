@@ -17,7 +17,7 @@ $SPEC{match_array_or_regex} = {
             arg_pos => 0,
         }],
         haystack => ["any*" => {
-            of => ["str*[]*", "str*"], # XXX "str*" should be "regex*"
+            of => [["array*"=>{of=>"str*"}], "str*"], # XXX 2nd should be regex*
             arg_pos => 1,
         }],
     },
