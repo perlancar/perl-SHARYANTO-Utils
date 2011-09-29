@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Fcntl qw(:DEFAULT :flock);
+use File::Which;
 use FindBin;
 use IO::Select;
 use POSIX;
@@ -31,6 +32,12 @@ sub new {
 
     die "BUG: Please specify main_loop routine"
         unless $args{main_loop};
+
+    if ($args{on_client_disconnect}) {
+        die "netstat is not available in PATH"
+            unless -x which("netstat");
+        require Parse::Netstat;
+    }
 
     $args{parent_pid} = $$;
     $args{children} = {}; # key = pid
@@ -373,6 +380,38 @@ sub run {
 
             my $scoreboard;
 
+            if (rand()*5 >= 4 && $self->{on_client_disconnect}) {
+                {
+                    my $output;
+                    {
+                        local $SIG{CHLD} = 'DEFAULT';
+                        $output = `netstat -anp 2>/dev/null`;
+                    }
+                    my $res    = Parse::Netstat::parse_netstat(
+                        output => $output, udp=>0, unix=>0);
+                    # currently unix stats is useless, everything is
+                    # CONNECTED/CONNECTING and no pid
+                    die "Bug: Netstat output can't be parsed: ".
+                        "$res->[0] - $res->[1]" unless $res->[0] == 200;
+                    my $conns = $res->[2]{active_conns};
+                    my %called_children;
+                    for my $conn (@$conns) {
+                        my $pid = $conn->{pid};
+                        next unless $pid;
+                        next unless $conn->{state} =~ /(?:FIN_WAIT|CLOSE_WAIT)/;
+                        next unless $self->{children}{ $pid };
+                        next if $called_children{$pid}++;
+                        $self->{on_client_disconnect}->(
+                            pid => $pid,
+                            local_host => $conn->{local_host},
+                            local_port => $conn->{local_port},
+                            foreign_host => $conn->{foreign_host},
+                            foreign_port => $conn->{foreign_port},
+                        );
+                    }
+                }
+            }
+
             # if busy, autoadjust child pool until at least 'max_children', and
             # decrease it again when idle
             if (rand()*4 >= 3) {
@@ -432,6 +471,7 @@ sub run {
                     }
                 }
             }
+
         }
     } else {
         $self->{main_loop}->();
@@ -547,7 +587,8 @@ sub check_reload_self {
         }
 
         for (keys %INC) {
-            # sometimes it's undef, e.g. Params/ValidateXS.pm (directly manipulate %INC?)
+            # sometimes it's undef, e.g. Params/ValidateXS.pm (directly
+            # manipulate %INC?)
             next unless defined($INC{$_});
             my $new_module_mtime = (-M $INC{$_});
             if (defined($modules_mtime->{$_})) {
@@ -629,6 +670,25 @@ In seconds.
 Run after the daemon initializes itself (daemonizes, writes PID file, etc),
 before spawning children. You usually bind to sockets here (if your daemon is a
 network server).
+
+=item * on_client_disconnect => CODEREF
+
+Do something after socket connection between client and child process is closed.
+This requires scoreboard (see C<scoreboard_path> argument) to record all the
+children's PIDs, and also the "netstat" command and L<Parse::Netstat> module to
+check for connections.
+
+This can be used, for example, to kill child process (cancel job) on disconnect.
+
+Will be called for each child server being disconnected. Code will receive a
+hash containing: C<pid>, C<proto>, C<local_host>, C<local_port>,
+C<foreign_host>, C<foreign_port>.
+
+Note that monitoring connections is done every few seconds by the parent
+process, so this code will not be run immediately after closing of connection.
+
+Currently only works for TCP connections and not Unix connections, due to lack
+of information provided by "netstat" for Unix connections.
 
 =item * main_loop* => CODEREF
 
