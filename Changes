@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.09    2011-09-29
+
+        Proc::Daemon::Prefork: Add 'on_client_disconnect' option.
+
+
 0.08    2011-09-22
 
         No functional changes. Rebuild dist with newer Sub::Spec::To::Pod.
