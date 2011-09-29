@@ -349,19 +349,19 @@ sub run {
         }
         $self->parent_sig_handlers;
 
-        # and maintain the population
+        # maintain children population and do cleaning tasks
         my $i = 0;
         my $j = 0; # number of increments of child when busy
         my $k = 0; # number of decrements of child when idle
         my $max_children_warned;
         while (1) {
-            #sleep; # wait for a signal (i.e., child's death)
             sleep 1;
             if ($self->{auto_reload_check_every} &&
                     $i++ >= $self->{auto_reload_check_every}) {
                 $self->check_reload_self;
                 $i = 0;
             }
+
             # top up child pool until at least 'prefork'
             if (keys(%{$self->{children}}) < $self->{prefork}) {
                 #warn "Topping up child pool to $self->{prefork}\n";
@@ -370,54 +370,60 @@ sub run {
                     $self->make_new_child(); # top up the child pool
                 }
             }
+
+            my $scoreboard;
+
             # if busy, autoadjust child pool until at least 'max_children', and
             # decrease it again when idle
             if (rand()*4 >= 3) {
-                my $res = $self->read_scoreboard;
-                if ($res) {
-                    if ($res->{num_busy} && $res->{num_idle} <= 1) {
+                $scoreboard = $self->read_scoreboard;
+                if ($scoreboard) {
+                    if ($scoreboard->{num_busy} &&
+                            $scoreboard->{num_idle} <= 1) {
                         warn "max_children ($self->{max_children} reached, ".
                             "consider increasing it)\n" if
-                                $res->{num_children} >= $self->{max_children}
-                                    && !$max_children_warned++;
+                                $scoreboard->{num_children} >=
+                                    $self->{max_children}
+                                        && !$max_children_warned++;
                         $j++;
                         #warn "Autoadjust: increase number of children ".
-                        #    "($j*2, $res->{num_children} -> .)\n";
+                        #    "($j*2, $scoreboard->{num_children} -> .)\n";
                         for (1..$j*2) {
-                            last if
-                                $res->{num_children} >= $self->{max_children};
+                            last if $scoreboard->{num_children} >=
+                                $self->{max_children};
                             $self->make_new_child();
-                            $res->{num_chilren}++;
+                            $scoreboard->{num_chilren}++;
                         }
                     } else {
                         $j = 0;
                     }
 
                     # disable temporarily, not yet working properly
-                    if (0 && $res->{num_idle} >= 3 &&
-                            $res->{num_children} > $self->{prefork}) {
+                    if (0 && $scoreboard->{num_idle} >= 3 &&
+                            $scoreboard->{num_children} > $self->{prefork}) {
                         $k++;
                         #warn "Autoadjust: decrease number of children ".
-                        #    "($k*2, $res->{num_children} -> .)\n";
+                        #    "($k*2, $scoreboard->{num_children} -> .)\n";
 
                         # sort by oldest idle
-                        my @pids = sort { $res->{children}{$a}{mtime} <=>
-                                              $res->{children}{$b}{mtime} }
-                            grep {$res->{children}{$_}{state} eq '_'}
-                                keys %{$res->{children}};
+                        my @pids = sort {
+                            $scoreboard->{children}{$a}{mtime} <=>
+                                $scoreboard->{children}{$b}{mtime} }
+                            grep {$scoreboard->{children}{$_}{state} eq '_'}
+                                keys %{$scoreboard->{children}};
                         for (1..$k*2) {
                             last if
-                                $res->{num_children} <= $self->{prefork};
+                                $scoreboard->{num_children} <= $self->{prefork};
                             if (@pids) {
                                 # pick oldest idle child and kill it
                                 my $pid = shift @pids;
                                 if ($pid) {
                                     kill TERM => $pid;
-                                    $res->{num_chilren}--;
-                                    delete $res->{children}{$pid};
-                                    delete $self->{children}{$pid};
-                                    #warn "Killed process $pid ".
-                                    #   "(num_children=$res->{num_children})\n";
+                                    $scoreboard->{num_chilren}--;
+                                    delete $scoreboard->{children}{$pid};
+                                    delete $scoreboard->{children}{$pid};
+                                    #warn "Killed process $pid (num_children=".
+                                    #    "$scoreboard->{num_children})\n";
                                 }
                             }
                         }
