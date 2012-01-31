@@ -65,8 +65,8 @@ _
         {url => "pm://Parse::HTTP::UserAgent", tags => ['see']},
         {url => "pm://HTTP::headers::UserAgent", tags => ['see']},
     ],
-    "_peri.accept_args" => "array",
-    "_peri.result_enveloped" => 0,
+    "_perinci.accept_args" => "array",
+    "_perinci.result_enveloped" => 0,
 };
 
 sub detect_http_ua_simple {
