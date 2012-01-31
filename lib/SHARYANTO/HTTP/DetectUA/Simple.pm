@@ -108,12 +108,12 @@ sub detect_http_ua_simple {
 1;
 # ABSTRACT: A very simple and generic browser detection library
 
-=begin
+=begin comment
 
 DESCRIPTION and FUNCTIONS section will be filled by BY
 Pod::Weaver::Plugin::Perinci.
 
-=end
+=end comment
 
 =head1 DESCRIPTION
 
