@@ -13,28 +13,52 @@ our @EXPORT_OK = qw(match_array_or_regex match_regex_or_array);
 
 our %SPEC;
 
+my $_str_or_re = ['any*'=>{of=>['regex*','str*']}];
+
 $SPEC{match_array_or_regex} = {
-    summary => 'Check whether an item matches array of values or regex',
+    v => 1.1,
+    summary => 'Check whether an item matches (list of) values/regexes',
+    description => <<'_',
+
+This routine can be used to match an item against a regex or a list of
+strings/regexes, e.g. when matching against an ACL.
+
+_
+    examples => [
+        {args=>{needle=>"abc", haystack=>["abc", "abd"]}, result=>1},
+        {args=>{needle=>"abc", haystack=>qr/ab./}, result=>1},
+        {args=>{needle=>"abc", haystack=>[qr/ab./, "abd"]}, result=>1},
+    ],
     args_as => 'array',
     args => {
-        needle => ["str*" => {
-            arg_pos => 0,
-        }],
-        haystack => ["any*" => {
-            of => [["array*"=>{of=>"str*"}], "str*"], # XXX 2nd should be regex*
-            arg_pos => 1,
-        }],
+        needle => {
+            schema => ["str*"],
+            pos => 0,
+            req => 1,
+        },
+        haystack => {
+            # XXX checking this schema might actually take longer than matching
+            # the needle! so when arg validation is implemented, provide a way
+            # to skip validating this schema
+            schema => ["any*" => {
+                of => [$_str_or_re, ["array*"=>{of=>$_str_or_re}]]}],
+            pos => 1,
+            req => 1,
+        },
     },
+    result_naked => 1,
 };
 sub match_array_or_regex {
     my ($needle, $haystack) = @_;
     my $ref = ref($haystack);
-    if ($ref eq 'Regexp') {
-        return $needle =~ $haystack;
-    } elsif ($ref eq 'ARRAY') {
+    if ($ref eq 'ARRAY') {
         return $needle ~~ @$haystack;
+    } elsif (!$ref) {
+        return $needle =~ /$haystack/;
+    } elsif ($ref eq 'Regexp') {
+        return $needle =~ $haystack;
     } else {
-        die "Can't match when haystack is a $ref";
+        die "Invalid haystack, must be regex or array of strings/regexes";
     }
 }
 

@@ -11,6 +11,11 @@ use SHARYANTO::Array::Util qw(match_array_or_regex match_regex_or_array);
 ok( match_array_or_regex("foo", [qw/foo bar baz/]), "match array 1");
 ok(!match_array_or_regex("qux", [qw/foo bar baz/]), "match array 2");
 
+ok( match_array_or_regex("foo", ["foo", qr/bar/]), "match array with regex 1");
+ok( match_array_or_regex("bar", ["foo", qr/ba./]), "match array with regex 2");
+ok(!match_array_or_regex("qux", ["foo", qr/bar/]), "match array with regex 3");
+
+ok( match_array_or_regex("foo", "foo"), "match regex 0");
 ok( match_array_or_regex("foo", qr/foo?/), "match regex 1");
 ok(!match_array_or_regex("qux", qr/foo?/), "match regex 2");
 
