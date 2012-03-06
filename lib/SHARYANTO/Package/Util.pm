@@ -11,9 +11,9 @@ sub package_exists {
 
     return unless $pkg =~ /\A\w+(::\w+)*\z/;
     if ($pkg =~ s/::(\w+)\z//) {
-        return ${$pkg . "::"}{$1 . "::"} ? 1:0;
+        return !!${$pkg . "::"}{$1 . "::"};
     } else {
-        return $::{$pkg . "::"} ? 1:0;
+        return !!$::{$pkg . "::"};
     }
 }
 
