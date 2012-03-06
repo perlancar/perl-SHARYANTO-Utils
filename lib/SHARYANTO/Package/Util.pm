@@ -18,7 +18,7 @@ sub package_exists {
 }
 
 1;
-# ABSTRACT: Array-related utilities
+# ABSTRACT: Package-related utilities
 
 =head1 SYNOPSIS
 
