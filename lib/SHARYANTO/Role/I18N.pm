@@ -4,6 +4,8 @@ use 5.010;
 use Log::Any '$log';
 use Moo::Role;
 
+# VERSION
+
 has lang => (
     is => 'rw',
     lazy => 1,

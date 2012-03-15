@@ -5,6 +5,8 @@ use Log::Any '$log';
 use Moo::Role;
 use Perinci::Object;
 
+# VERSION
+
 with 'SHARYANTO::Role::I18N';
 
 requires 'lang';

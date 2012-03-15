@@ -4,6 +4,8 @@ use 5.010;
 use Log::Any '$log';
 use Moo::Role;
 
+# VERSION
+
 has doc_sections => (is=>'rw');
 has doc_lines => (is => 'rw'); # store final result, array
 has doc_parse => (is => 'rw'); # store parsed items, hash
@@ -11,8 +13,6 @@ has indent_level => (is => 'rw');
 has indent => (is => 'rw', default => sub{"  "}); # indent character
 
 requires 'add_doc_lines';
-
-# VERSION
 
 sub add_doc_section_before {
     my ($self, $name, $before) = @_;

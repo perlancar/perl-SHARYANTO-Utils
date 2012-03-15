@@ -1,5 +1,13 @@
 Revision history for SHARYANTO-Utils
 
+0.14    2012-03-15
+
+        [INCOMPATIBLE CHANGES]
+
+        - Change (split) SHARYANTO::Doc::Base base class into
+          SHARYANTO::Role::{Doc::Section,I18N,I18NRinci}.
+
+
 0.13    2012-03-14
 
         Add SHARYANTO::Doc::Base.
