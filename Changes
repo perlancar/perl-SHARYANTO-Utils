@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Utils
 
+0.15    2012-03-16
+
+        No functional changes. Add dependencies to Locale::Maketext{,::Lexicon}
+        for Role::I18N users.
+
+
 0.14    2012-03-15
 
         [INCOMPATIBLE CHANGES]
