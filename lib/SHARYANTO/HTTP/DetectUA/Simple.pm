@@ -41,6 +41,7 @@ because it does significantly less.
 _
     args => {
         env => {
+            pos => 0,
             summary => 'CGI-compatible environment, e.g. \%ENV or PSGI\'s $env',
         },
     },
@@ -107,16 +108,5 @@ sub detect_http_ua_simple {
 
 1;
 # ABSTRACT: A very simple and generic browser detection library
-
-=begin comment
-
-DESCRIPTION and FUNCTIONS section will be filled by BY
-Pod::Weaver::Plugin::Perinci.
-
-=end comment
-
-=head1 DESCRIPTION
-
-=head1 FUNCTIONS
 
 =cut
