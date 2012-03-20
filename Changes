@@ -1,5 +1,18 @@
 Revision history for SHARYANTO-Utils
 
+0.16    2012-03-20
+
+        [ENHANCEMENTS]
+
+        - Add role: SHARYANTO::Role::I18NMany
+
+        - Add module: SHARYANTO::String::Util
+
+        [FIXES]
+
+        - dzil: Add missing dependency to Log::Any
+
+
 0.15    2012-03-16
 
         No functional changes. Add dependencies to Locale::Maketext{,::Lexicon}

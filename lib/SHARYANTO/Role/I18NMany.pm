@@ -43,7 +43,7 @@ sub lh {
 
     $lhs->{$lang} = $lh;
     $lh;
-);
+}
 
 sub locl {
     my ($self, $lang, @args) = @_;
