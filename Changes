@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.17    2012-03-21
+
+        [FIXES]
+
+        - Some fixes to Role::I18Many
+
+
 0.16    2012-03-20
 
         [ENHANCEMENTS]
