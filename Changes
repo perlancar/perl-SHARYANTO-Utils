@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Utils
 
+0.18    2012-03-23
+
+        No functional changes. Split SHARYANTO::String::Util to its own dist to
+        avoid circular dependency problem with Perinci-Object.
+
+
 0.17    2012-03-21
 
         [FIXES]
