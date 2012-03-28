@@ -18,7 +18,7 @@ sub explain_child_error {
             ($e & 127),
             (($e & 128) ? 'with' : 'without'));
     } else {
-        return "exited with value %d", $e >> 8;
+        return sprintf("exited with value %d", $e >> 8);
     }
 }
 
