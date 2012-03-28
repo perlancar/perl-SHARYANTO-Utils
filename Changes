@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.19    2012-03-28
+
+        [FIXES]
+
+        - Small sprintf() fix for Proc::ChildError.
+
+
 0.18    2012-03-23
 
         No functional changes. Split SHARYANTO::String::Util to its own dist to
