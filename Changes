@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.20    2012-03-29
+
+        [ENHANCEMENTS]
+
+        - Package::Util: Add list_package_contents() & list_subpackages().
+
+
 0.19    2012-03-28
 
         [FIXES]
