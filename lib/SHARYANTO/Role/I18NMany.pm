@@ -22,12 +22,11 @@ sub lh {
     my ($self, $lang) = @_;
     die "Please specify lang" unless $lang;
 
-    state $obj;
-    if (!$obj) {
+    state $obj = do {
         require Module::Load;
         Module::Load::load($self->loc_class);
         $obj = $self->loc_class->new;
-    }
+    };
 
     state $lhs = {};
     return $lhs->{$lang} if $lhs->{$lang};
