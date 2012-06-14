@@ -75,6 +75,8 @@ sub unlink_pidfile {
 
 sub kill_running {
     my ($self) = @_;
+    die "You did not daemonize, so you cannot kill_running()"
+        unless $self->{daemonized};
     for ({sig=>"TERM", delay=>1},
          {sig=>"TERM", delay=>3},
          {sig=>"KILL"},
@@ -166,7 +168,6 @@ sub child_sig_handlers {
 sub init {
     my ($self) = @_;
 
-    $self->{pid_path} or die "BUG: Please specify pid_path";
     #$self->{scoreboard_path} or die "BUG: Please specify scoreboard_path";
     if ($self->{require_root}) {
         $> and die "Permission denied, daemon must be run as root\n";
@@ -633,7 +634,7 @@ If true, bails out if not running as root.
 
 =item * access_log_path => STR (required if daemonize=1)
 
-=item * pid_path* => STR
+=item * pid_path => STR (required if daemonize=1)
 
 =item * scoreboard_path => STR (default none)
 
