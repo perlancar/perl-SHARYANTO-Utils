@@ -1,5 +1,13 @@
 Revision history for SHARYANTO-Utils
 
+0.22    2012-06-14
+
+        No functional changes.
+
+        - Proc::Daemon::Prefork: 'pid_path' argument is not required unless we
+          daemonize.
+
+
 0.21    2012-03-29
 
         No functional changes. Add missing dependency to Moo [CT].
