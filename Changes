@@ -1,6 +1,11 @@
 Revision history for SHARYANTO-Utils
 
-0.22    2012-06-14
+0.23    2012-07-17 (SHARYANTO)
+
+        - Package::Util: Handle constants.
+
+
+0.22    2012-06-14 (SHARYANTO)
 
         No functional changes.
 
@@ -8,39 +13,39 @@ Revision history for SHARYANTO-Utils
           daemonize.
 
 
-0.21    2012-03-29
+0.21    2012-03-29 (SHARYANTO)
 
         No functional changes. Add missing dependency to Moo [CT].
 
 
-0.20    2012-03-29
+0.20    2012-03-29 (SHARYANTO)
 
         [ENHANCEMENTS]
 
         - Package::Util: Add list_package_contents() & list_subpackages().
 
 
-0.19    2012-03-28
+0.19    2012-03-28 (SHARYANTO)
 
         [FIXES]
 
         - Small sprintf() fix for Proc::ChildError.
 
 
-0.18    2012-03-23
+0.18    2012-03-23 (SHARYANTO)
 
         No functional changes. Split SHARYANTO::String::Util to its own dist to
         avoid circular dependency problem with Perinci-Object.
 
 
-0.17    2012-03-21
+0.17    2012-03-21 (SHARYANTO)
 
         [FIXES]
 
         - Some fixes to Role::I18Many
 
 
-0.16    2012-03-20
+0.16    2012-03-20 (SHARYANTO)
 
         [ENHANCEMENTS]
 
@@ -53,13 +58,13 @@ Revision history for SHARYANTO-Utils
         - dzil: Add missing dependency to Log::Any
 
 
-0.15    2012-03-16
+0.15    2012-03-16 (SHARYANTO)
 
         No functional changes. Add dependencies to Locale::Maketext{,::Lexicon}
         for Role::I18N users.
 
 
-0.14    2012-03-15
+0.14    2012-03-15 (SHARYANTO)
 
         [INCOMPATIBLE CHANGES]
 
@@ -67,55 +72,55 @@ Revision history for SHARYANTO-Utils
           SHARYANTO::Role::{Doc::Section,I18N,I18NRinci}.
 
 
-0.13    2012-03-14
+0.13    2012-03-14 (SHARYANTO)
 
         Add SHARYANTO::Doc::Base.
 
 
-0.12    2012-03-06
+0.12    2012-03-06 (SHARYANTO)
 
         Add SHARYANTO::Package::Util.
 
 
-0.11    2012-03-01
+0.11    2012-03-01 (SHARYANTO)
 
         Array::Util: allow haystack to be a single string (assumed to be a
         regex), document that haystack can also be a list of regexes. Updated
         metadata to 1.1.
 
 
-0.10    2011-09-29
+0.10    2011-09-29 (SHARYANTO)
 
         Add SHARYANTO::HTTP::DetectUA::Simple.
 
 
-0.09    2011-09-29
+0.09    2011-09-29 (SHARYANTO)
 
         Proc::Daemon::Prefork: Add 'on_client_disconnect' option.
 
 
-0.08    2011-09-22
+0.08    2011-09-22 (SHARYANTO)
 
         No functional changes. Rebuild dist with newer Sub::Spec::To::Pod.
 
 
-0.07    2011-09-22
+0.07    2011-09-22 (SHARYANTO)
 
         Array::Util: Add alias function match_regex_or_array, add sub specs.
 
 
-0.06    2011-09-22
+0.06    2011-09-22 (SHARYANTO)
 
         Add SHARYANTO::Array::Util.
 
 
-0.05    2011-08-05
+0.05    2011-08-05 (SHARYANTO)
 
         - Proc::Daemon::Prefork: 'access_log_path' and 'error_log_path' are now
           optional.
 
 
-0.04    2011-07-19
+0.04    2011-07-19 (SHARYANTO)
 
         [INCOMPATIBLE CHANGES]
 
@@ -123,14 +128,14 @@ Revision history for SHARYANTO-Utils
           ambiguity), now defaults to 0.
 
 
-0.03    2011-07-08
+0.03    2011-07-08 (SHARYANTO)
 
         [INCOMPATIBLE CHANGES]
 
         - Rename SHARYANTO::Proc::Daemon{,::Prefork}
 
 
-0.02    2011-07-05
+0.02    2011-07-05 (SHARYANTO)
 
         [ENHANCEMENTS]
 
@@ -138,6 +143,6 @@ Revision history for SHARYANTO-Utils
           from prefork() to max_children() according to load.
 
 
-0.01    2011-06-17
+0.01    2011-06-17 (SHARYANTO)
 
         First release.
