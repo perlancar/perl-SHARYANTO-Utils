@@ -40,6 +40,11 @@ sub list_package_contents {
     while (my ($k, $v) = each %$symtbl) {
         next if $k =~ /::$/; # subpackage
         my $n;
+        if ("$v" !~ /^\*/) {
+            # constant
+            $res{$k} = $v;
+            next;
+        }
         if (defined *$v{CODE}) {
             $res{$k} = *$v{CODE}; # subroutine
             $n++;
