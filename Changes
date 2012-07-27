@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.24    2012-07-27 (SHARYANTO)
+
+        - Add module: SHARYANTO::File::Util.
+
+
 0.23    2012-07-17 (SHARYANTO)
 
         - Package::Util: Handle constants.
