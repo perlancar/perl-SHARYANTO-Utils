@@ -48,6 +48,8 @@ but:
  -l "sym"             # true, Perl performs lstat()
  -e _                 # false
 
-This function performs the latter.
+This function performs the following test:
+
+ !(-l "sym") && (-e _) || (-l _)
 
 =cut
