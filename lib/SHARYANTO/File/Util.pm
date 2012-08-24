@@ -4,9 +4,11 @@ use 5.010;
 use strict;
 use warnings;
 
+use Cwd ();
+
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(file_exists);
+our @EXPORT_OK = qw(file_exists l_abs_path);
 
 # VERSION
 
@@ -18,15 +20,32 @@ sub file_exists {
     !(-l $path) && (-e _) || (-l _);
 }
 
+sub l_abs_path {
+    my $path = shift;
+    return Cwd::abs_path($path) unless (-l $path);
+
+    $path =~ s!/\z!!;
+    my ($parent, $leaf);
+    if ($path =~ m!(.+)/(.+)!s) {
+        $parent = Cwd::abs_path($1);
+        return undef unless defined($path);
+        $leaf   = $2;
+    } else {
+        $parent = Cwd::getcwd();
+        $leaf   = $path;
+    }
+    "$parent/$leaf";
+}
+
 1;
 # ABSTRACT: File-related utilities
 
 =head1 SYNOPSIS
 
- use SHARYANTO::File::Util qw(file_exists);
+ use SHARYANTO::File::Util qw(file_exists l_abs_path);
 
  print "file exists" if file_exists("/path/to/file/or/dir");
-
+ print "absolute path = ", l_abs_path("foo");
 
 =head1 DESCRIPTION
 
@@ -51,5 +70,26 @@ but:
 This function performs the following test:
 
  !(-l "sym") && (-e _) || (-l _)
+
+=head2 l_abs_path($path) => STR
+
+Just like Cwd::abs_path(), except that it wil follow not follow symlink if $path
+is symlink (but it will follow symlinks for the parent paths).
+
+Example:
+
+ use Cwd qw(getcwd abs_path);
+
+ say getcwd();              # /home/steven
+ # s is a symlink to /tmp/foo
+ say abs_path("s");         # /tmp/foo
+ say l_abs_path("s");       # /home/steven/s
+ # s2 is a symlink to /tmp
+ say abs_path("s2/foo");    # /tmp/foo
+ say l_abs_path("s2/foo");  # /tmp/foo
+
+Mnemonic: l_abs_path -> abs_path is analogous to lstat -> stat.
+
+Note: currently uses hardcoded C</> as path separator.
 
 =cut
