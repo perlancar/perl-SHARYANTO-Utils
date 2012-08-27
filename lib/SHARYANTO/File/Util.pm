@@ -8,7 +8,7 @@ use Cwd ();
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(file_exists l_abs_path);
+our @EXPORT_OK = qw(file_exists l_abs_path dir_empty);
 
 # VERSION
 
@@ -37,15 +37,26 @@ sub l_abs_path {
     "$parent/$leaf";
 }
 
+sub dir_empty {
+    my ($dir) = @_;
+    return undef unless (-d $dir);
+    return undef unless opendir my($dh), $dir;
+    my @d = grep {$_ ne '.' && $_ ne '..'} readdir($dh);
+    my $res = !@d;
+    #$log->tracef("dir_is_empty(%s)? %d", $dir, $res);
+    $res;
+}
+
 1;
 # ABSTRACT: File-related utilities
 
 =head1 SYNOPSIS
 
- use SHARYANTO::File::Util qw(file_exists l_abs_path);
+ use SHARYANTO::File::Util qw(file_exists l_abs_path dir_empty);
 
  print "file exists" if file_exists("/path/to/file/or/dir");
  print "absolute path = ", l_abs_path("foo");
+ print "dir exists and is empty" if dir_empty("/path/to/dir");
 
 =head1 DESCRIPTION
 
@@ -91,5 +102,9 @@ Example:
 Mnemonic: l_abs_path -> abs_path is analogous to lstat -> stat.
 
 Note: currently uses hardcoded C</> as path separator.
+
+=head2 dir_empty($dir) => BOOL
+
+Will return true if C<$dir> exists and is empty.
 
 =cut
