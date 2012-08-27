@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.27    2012-08-27 (SHARYANTO)
+
+        - File::Util: add function: dir_empty().
+
+
 0.26    2012-08-24 (SHARYANTO)
 
         - File::Util: add function: l_abs_path().
