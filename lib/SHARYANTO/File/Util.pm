@@ -107,4 +107,12 @@ Note: currently uses hardcoded C</> as path separator.
 
 Will return true if C<$dir> exists and is empty.
 
+
+=head1 FAQ
+
+=head2 Where is file_empty()?
+
+For checking if some path exists, is a regular file, and is empty (content is
+zero-length), you can simply use the C<-z> filetest operator.
+
 =cut
