@@ -588,8 +588,8 @@ sub check_reload_self {
         }
 
         for (keys %INC) {
-            # sometimes it's undef, e.g. Params/ValidateXS.pm (directly
-            # manipulate %INC?)
+            # undef entry in %INC can mean require() has failed loading it, skip
+            # this for now
             next unless defined($INC{$_});
             my $new_module_mtime = (-M $INC{$_});
             if (defined($modules_mtime->{$_})) {
