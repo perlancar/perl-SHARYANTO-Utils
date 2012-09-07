@@ -11,6 +11,7 @@ sub explain_child_error {
     my ($num, $str);
     if (defined $_[0]) {
         $num = $_[0];
+        $str = $_[1];
     } else {
         $num = $?;
         $str = $!;
@@ -33,10 +34,12 @@ sub explain_child_error {
 
 =head1 FUNCTIONS
 
-=head2 explain_child_error(INT) => STR
+=head2 explain_child_error($child_error, $os_error) => STR
 
-Taken from perldoc -f system. Converts error number to something like one of the
-following:
+Produce a string description of an error number. C<$child_error> defaults to
+C<$?> if not specified. C<$os_error> defaults to C<$!> if not specified.
+
+The algorithm is taken from perldoc -f system. Some sample output:
 
  failed to execute: No such file or directory (-1)
  died with signal 15, with coredump
