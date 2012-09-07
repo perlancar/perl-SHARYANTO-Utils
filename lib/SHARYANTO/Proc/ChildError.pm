@@ -8,17 +8,23 @@ our @EXPORT_OK = qw(explain_child_error);
 # VERSION
 
 sub explain_child_error {
-    my $e = shift // $?;
+    my ($num, $str);
+    if (defined $_[0]) {
+        $num = $_[0];
+    } else {
+        $num = $?;
+        $str = $!;
+    }
 
-    if ($e == -1) {
-        return "failed to execute: $e";
-    } elsif ($e & 127) {
+    if ($num == -1) {
+        return "failed to execute: ".($str ? "$str ":"")."($num)";
+    } elsif ($num & 127) {
         return sprintf(
             "died with signal %d, %s coredump",
-            ($e & 127),
-            (($e & 128) ? 'with' : 'without'));
+            ($num & 127),
+            (($num & 128) ? 'with' : 'without'));
     } else {
-        return sprintf("exited with value %d", $e >> 8);
+        return sprintf("exited with code %d", $num >> 8);
     }
 }
 
@@ -32,7 +38,7 @@ sub explain_child_error {
 Taken from perldoc -f system. Converts error number to something like one of the
 following:
 
- failed to execute: -1
+ failed to execute: No such file or directory (-1)
  died with signal 15, with coredump
  exited with value 3
 
