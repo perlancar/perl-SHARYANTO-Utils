@@ -1,4 +1,4 @@
-use SHARYANTO::Scalar::Util;
+package SHARYANTO::Scalar::Util;
 
 use 5.010;
 use strict;
