@@ -54,8 +54,8 @@ subtest dir_empty => sub {
     mkdir "hasdotfiles", 0755;
     write_file("hasdotfiles/.1", "");
 
-    mkdir "hasdirs", 0755;
-    mkdir "hasdirs/.1", "";
+    mkdir "hasdotdirs", 0755;
+    mkdir "hasdotdirs/.1";
 
     mkdir "unreadable", 0000;
 
@@ -63,7 +63,7 @@ subtest dir_empty => sub {
     ok(!dir_empty("doesntexist"), "doesntexist");
     ok(!dir_empty("hasfiles"), "hasfiles");
     ok(!dir_empty("hasdotfiles"), "hasdotfiles");
-    ok(!dir_empty("hasdirs"), "hasdirs");
+    ok(!dir_empty("hasdotdirs"), "hasdotdirs");
     ok(!dir_empty("unreadable"), "unreadable");
 };
 
