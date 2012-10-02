@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Utils
 
+0.30    2012-10-02 (SHARYANTO)
+
+        No functional changes. Fix file_util.t due to failure report by Aaron
+        Holmgren.
+
+
 0.29    2012-09-13 (SHARYANTO)
 
         - Add module: SHARYANTO::Scalar::Util.
