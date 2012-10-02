@@ -1,9 +1,10 @@
-#!perl -T
+#!perl
 
 use 5.010;
 use strict;
 use warnings;
 
+use Cwd qw(abs_path);
 use File::chdir;
 use File::Slurp;
 use File::Spec;
@@ -36,7 +37,7 @@ subtest l_abs_path => sub {
     my $dir = tempdir(CLEANUP=>1);
     local $CWD = $dir;
 
-    my $tmp = File::Spec->tmpdir;
+    my $tmp = abs_path(File::Spec->tmpdir);
     symlink $tmp, "s";
     is(l_abs_path("s"), "$dir/s", "s");
     is(l_abs_path("s/foo"), "$tmp/foo", "s/foo");
