@@ -13,7 +13,7 @@ our @EXPORT_OK = qw(match_array_or_regex match_regex_or_array);
 
 our %SPEC;
 
-my $_str_or_re = ['any*'=>{of=>['regex*','str*']}];
+my $_str_or_re = ['any*'=>{of=>['re*','str*']}];
 
 $SPEC{match_array_or_regex} = {
     v => 1.1,
