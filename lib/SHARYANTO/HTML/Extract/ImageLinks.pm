@@ -16,6 +16,7 @@ our @EXPORT_OK = qw(extract_image_links);
 our %SPEC;
 
 $SPEC{extract_image_links} = {
+    v => 1.1,
     summary => 'Extract image links from HTML document',
     description => <<'_',
 
@@ -23,20 +24,22 @@ Either specify either url, html.
 
 _
     args => {
-        html => ['str' => {
+        html => {
+            schema => 'str*',
+            req => 1,
             summary => 'HTML document to extract from',
-            arg_from_stdin => 1,
-        }],
-        base => ['str' => {
+            cmdline_src => 'stdin_or_files',
+        },
+        base => {
+            schema => 'str',
             summary => 'base URL for images',
-        }],
+        },
     },
 };
 sub extract_image_links {
     my %args = @_;
 
     my $html = $args{html};
-    defined($html) or return [400, "Please specify html"];
     my $base = $args{base};
 
     # get base from <BASE HREF> if exists
