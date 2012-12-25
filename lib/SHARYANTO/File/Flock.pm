@@ -99,7 +99,7 @@ sub DESTROY {
  undef $lock;
 
  # set number of retries and unlink lock file during DESTROY.
- $lock = SHARYANTO::File::Flock->lock($path, {retries=>30});
+ $lock = SHARYANTO::File::Flock->lock($path, {retries=>30, unlink=>1});
 
  # explicitly unlock
  $lock->release;
