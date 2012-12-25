@@ -21,3 +21,9 @@ sub langprop {
 
 1;
 # ABSTRACT: Role for class that wants to work with language and Rinci metadata
+
+=head1 METHODS
+
+=head2 $obj->langprop($meta, $prop)
+
+=cut

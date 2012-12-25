@@ -33,3 +33,9 @@ sub process_tt_recursive {
 
 1;
 # ABSTRACT: Recursively process .tt files
+
+=head1 FUNCTIONS
+
+=head2 process_tt_recursive($dir, $vars, $opts)
+
+=cut

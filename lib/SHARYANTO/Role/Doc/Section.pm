@@ -150,7 +150,13 @@ Character(s) used for indent.
 
 =head2 add_doc_section_after($name, $anchor)
 
+=head2 after_generate_doc()
+
+=head2 before_generate_doc()
+
 =head2 delete_doc_section($name)
+
+=head2 doc_lines()
 
 =head2 add_doc_lines(@lines)
 

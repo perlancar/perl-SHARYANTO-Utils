@@ -616,7 +616,7 @@ sub check_reload_self {
 1;
 # ABSTRACT: Create preforking, autoreloading daemon
 
-=for Pod::Coverage .
+=for Pod::Coverage .*
 
 =head1 METHODS
 

@@ -65,13 +65,14 @@ first argument.
 
 =head1 ATTRIBUTES
 
-=head2 lang
+=head2 langs => ARRAY
 
-Defaults to LANG or LANGUAGE environment variable, or C<en_US>.
+Defaults to a single element array with value of LANG or LANGUAGE environment
+variable, or C<en_US>.
 
-=head2 loc_class
+=head2 loc_class => STR
 
-Project class. Defaults to $class::I18N.
+Project class name. Defaults to $class::I18N.
 
 
 =head1 METHODS

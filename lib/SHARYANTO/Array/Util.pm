@@ -40,8 +40,11 @@ _
             # XXX checking this schema might actually take longer than matching
             # the needle! so when arg validation is implemented, provide a way
             # to skip validating this schema
+
             schema => ["any*" => {
-                of => [$_str_or_re, ["array*"=>{of=>$_str_or_re}]]}],
+                # turned off temporarily 2012-12-25, Data::Sah is currently broken
+                #of => [$_str_or_re, ["array*"=>{of=>$_str_or_re}]],
+            }],
             pos => 1,
             req => 1,
         },
