@@ -34,17 +34,18 @@ sub _lock {
   TRY:
     while (1) {
         $tries++;
-        my @st1 = stat($path); # stat before lock
         open $self->{_fh}, ">>", $path
             or die "Can't open lock file '$path': $!";
+        my @st1 = stat($self->{_fh}); # stat before lock
         if (flock($self->{_fh}, LOCK_EX | LOCK_NB)) {
             # we need to check again after flock() to make sure that no other
-            # process comes between stat() and open() and unlink/recreate the
+            # process comes between open() and flock() and unlink/recreate the
             # lock file under us. if that happens, we need to try again. to make
             # sure that the lock file is the same file, we compare dev+inode.
-            my @st2 = stat($path);
+            my @st2 = stat($path); # stat after lock
             redo TRY
-                if @st1 && @st2 && ($st1[0] != $st2[0] || $st1[1] != $st2[1]);
+                if @st1 && @st2 && # should always be the case under normal cond
+                    ($st1[0] != $st2[0] || $st1[1] != $st2[1]);
             last;
         } else {
             $tries <= $self->{retries}
