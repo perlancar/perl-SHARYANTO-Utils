@@ -169,4 +169,6 @@ L<File::Flock::Tiny>
 
 flock() Perl function.
 
+https://github.com/trinitum/perl-File-Flock-Tiny/issues/1
+
 =cut
