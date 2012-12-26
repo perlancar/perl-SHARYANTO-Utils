@@ -6,6 +6,8 @@ use warnings;
 
 use Fcntl ':flock';
 
+# VERSION
+
 sub lock {
     my ($class, $path, $opts) = @_;
     $opts //= {};
