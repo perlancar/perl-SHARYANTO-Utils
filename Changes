@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Utils
 
+0.34    2012-12-28 (SHARYANTO)
+
+        - File::Flock: Shut up perl warning when unlocking a closed filehandle
+          (usually should be harmless, can happen during DESTROY on error/die).
+
+
 0.33    2012-12-26 (SHARYANTO)
 
         - File::Flock: Forgot to add $VERSION.
