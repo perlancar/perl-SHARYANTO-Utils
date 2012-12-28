@@ -65,7 +65,10 @@ sub _unlock {
     my $path = $self->{path};
 
     return 0 unless $self->{_fh};
-    flock $self->{_fh}, LOCK_UN;
+    {
+        no warnings; # to shut up warning about flock on closed filehandle
+        flock $self->{_fh}, LOCK_UN;
+    }
     close delete($self->{_fh});
     1;
 }
