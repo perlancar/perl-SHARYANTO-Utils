@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.35    2013-02-15 (SHARYANTO)
+
+        No functional changes. Rewrite tests for l_abs_path() to more clearly
+        show the differences between it and abs_path(), pass on systems where
+        /tmp is symlinked.
+
+
 0.34    2012-12-28 (SHARYANTO)
 
         - File::Flock: Shut up perl warning when unlocking a closed filehandle
