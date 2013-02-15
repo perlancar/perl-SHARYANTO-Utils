@@ -84,8 +84,8 @@ This function performs the following test:
 
 =head2 l_abs_path($path) => STR
 
-Just like Cwd::abs_path(), except that it wil follow not follow symlink if $path
-is symlink (but it will follow symlinks for the parent paths).
+Just like Cwd::abs_path(), except that it will not follow symlink if $path is
+symlink (but it will follow symlinks for the parent paths).
 
 Example:
 
