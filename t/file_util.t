@@ -34,13 +34,26 @@ subtest file_exists => sub {
 };
 
 subtest l_abs_path => sub {
-    my $dir = tempdir(CLEANUP=>1);
+    my $dir = abs_path(tempdir(CLEANUP=>1));
     local $CWD = $dir;
 
-    my $tmp = abs_path(File::Spec->tmpdir);
-    symlink $tmp, "s";
-    is(l_abs_path("s"), "$dir/s", "s");
-    is(l_abs_path("s/foo"), "$tmp/foo", "s/foo");
+    mkdir("tmp");
+    write_file("tmp/file", "");
+    symlink("file", "tmp/symfile");
+    symlink("$dir/tmp", "tmp/symdir");
+    symlink("not_exists", "tmp/symnef"); # non-existing file
+    symlink("/not_exists".rand()."/1", "tmp/symnep"); # non-existing path
+
+    is(  abs_path("tmp/file"   ), "$dir/tmp/file"   , "abs_path file");
+    is(l_abs_path("tmp/file"   ), "$dir/tmp/file"   , "l_abs_path file");
+    is(  abs_path("tmp/symfile"), "$dir/tmp/file"   , "abs_path symfile");
+    is(l_abs_path("tmp/symfile"), "$dir/tmp/symfile", "l_abs_path symfile");
+    is(  abs_path("tmp/symdir" ), "$dir/tmp"        , "abs_path symdir");
+    is(l_abs_path("tmp/symdir" ), "$dir/tmp/symdir" , "l_abs_path symdir");
+    is(  abs_path("tmp/symnef" ), "$dir/tmp/not_exists", "abs_path symnef");
+    is(l_abs_path("tmp/symnef" ), "$dir/tmp/symnef" , "l_abs_path symnef");
+    ok(! abs_path("tmp/symnep" ), "abs_path symnep");
+    is(l_abs_path("tmp/symnep" ), "$dir/tmp/symnep" , "l_abs_path symnep");
 };
 
 subtest dir_empty => sub {
