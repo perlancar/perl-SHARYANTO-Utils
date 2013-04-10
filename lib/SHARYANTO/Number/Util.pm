@@ -22,7 +22,7 @@ sub format_metric {
     my $base  = $base0 == 2 ? 1024 : 1000;
     my $rank  = int(log(abs($num))/log($base));
     my $prefix;
-    if    ($rank ==  0 && $num > 1) { $prefix = ""  }
+    if    ($rank ==  0 && $num >= 1) { $prefix = ""  }
     elsif ($rank ==  1) { $prefix = $im && $base0==10 ? "ki" : "k" } # kilo
     elsif ($rank ==  2) { $prefix = $im && $base0==10 ? "Mi" : "M" } # mega
     elsif ($rank ==  3) { $prefix = $im && $base0==10 ? "Gi" : "G" } # giga
