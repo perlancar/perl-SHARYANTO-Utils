@@ -1,3 +1,4 @@
+package SHARYANTO::YAML::Any_SyckOnly;
 package SHARYANTO::YAML::Any;
 
 # NOTE: temporary namespace, will eventually be refactored, tidied up, and sent

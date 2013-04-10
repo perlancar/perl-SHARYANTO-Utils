@@ -1,3 +1,4 @@
+package SHARYANTO::YAML::Any_YAMLAny;
 package SHARYANTO::YAML::Any;
 
 # NOTE: temporary namespace, will eventually be refactored, tidied up, and sent
@@ -131,14 +132,6 @@ sub croak {
 1;
 __END__
 
-=head1 NAME
-
-SHARYANTO::YAML::Any - Pick a YAML implementation and use it.
-
-=head1 VERSION
-
-version 0.72
-
 =head1 SYNOPSIS
 
     use SHARYANTO::YAML::Any;
@@ -210,11 +203,11 @@ C<require>. If no implementation is found, an error will be thrown.
 
 =back
 
-=head1 AUTHOR
+=head1 ORIGINAL AUTHOR
 
 Ingy döt Net <ingy@cpan.org>
 
-=head1 COPYRIGHT
+=head1 ORIGINAL COPYRIGHT
 
 Copyright (c) 2008. Ingy döt Net.
 
@@ -222,17 +215,6 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 See L<http://www.perl.com/perl/misc/Artistic.html>
-
-=head1 AUTHOR
-
-Steven Haryanto <stevenharyanto@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is copyright (c) 2010 by Steven Haryanto.
-
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
 
 =cut
 

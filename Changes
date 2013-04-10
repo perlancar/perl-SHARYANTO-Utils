@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.36    2013-04-10 (SHARYANTO)
+
+        - Add module: SHARYANTO::Number::Util (format_metric()).
+
+
 0.35    2013-02-15 (SHARYANTO)
 
         No functional changes. Rewrite tests for l_abs_path() to more clearly
