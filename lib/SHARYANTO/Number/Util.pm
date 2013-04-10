@@ -20,28 +20,35 @@ sub format_metric {
     my $im    = $opts->{i_mark} // 1;
     my $base0 = $opts->{base};
     my $base  = $base0 == 2 ? 1024 : 1000;
-    my $rank  = int(log(abs($num))/log($base));
+
+    my $rank;
     my $prefix;
-    if    ($rank ==  0 && $num >= 1) { $prefix = ""  }
-    elsif ($rank ==  1) { $prefix = $im && $base0==10 ? "ki" : "k" } # kilo
-    elsif ($rank ==  2) { $prefix = $im && $base0==10 ? "Mi" : "M" } # mega
-    elsif ($rank ==  3) { $prefix = $im && $base0==10 ? "Gi" : "G" } # giga
-    elsif ($rank ==  4) { $prefix = $im && $base0==10 ? "Ti" : "T" } # tera
-    elsif ($rank ==  5) { $prefix = $im && $base0==10 ? "Pi" : "P" } # peta
-    elsif ($rank >=  8) { $prefix = $im && $base0==10 ? "Yi" : "Y" } # yotta
-    elsif ($rank ==  7) { $prefix = $im && $base0==10 ? "Zi" : "Z" } # zetta
-    elsif ($rank ==  6) { $prefix = $im && $base0==10 ? "Ei" : "E" } # exa
-    elsif ($rank ==  0) { $prefix = "m" } # milli
-    elsif ($rank == -1) { $prefix = "μ" } # micro
-    elsif ($rank == -2) { $prefix = "n" } # nano
-    elsif ($rank == -3) { $prefix = "p" } # pico
-    elsif ($rank == -4) { $prefix = "f" } # femto
-    elsif ($rank == -5) { $prefix = "a" } # atto
-    elsif ($rank == -6) { $prefix = "z" } # zepto
-    elsif ($rank <= -7) { $prefix = "y" } # yocto
+    if ($num == 0) {
+        $rank = 0;
+        $prefix = "";
+    } else {
+        $rank = int(log(abs($num))/log($base));
+        if    ($rank ==  0 && abs($num) >= 1) { $prefix = ""  }
+        elsif ($rank ==  1) { $prefix = $im && $base0==10 ? "ki" : "k" } # kilo
+        elsif ($rank ==  2) { $prefix = $im && $base0==10 ? "Mi" : "M" } # mega
+        elsif ($rank ==  3) { $prefix = $im && $base0==10 ? "Gi" : "G" } # giga
+        elsif ($rank ==  4) { $prefix = $im && $base0==10 ? "Ti" : "T" } # tera
+        elsif ($rank ==  5) { $prefix = $im && $base0==10 ? "Pi" : "P" } # peta
+        elsif ($rank >=  8) { $prefix = $im && $base0==10 ? "Yi" : "Y" } # yotta
+        elsif ($rank ==  7) { $prefix = $im && $base0==10 ? "Zi" : "Z" } # zetta
+        elsif ($rank ==  6) { $prefix = $im && $base0==10 ? "Ei" : "E" } # exa
+        elsif ($rank ==  0) { $prefix = "m" } # milli
+        elsif ($rank == -1) { $prefix = "μ" } # micro
+        elsif ($rank == -2) { $prefix = "n" } # nano
+        elsif ($rank == -3) { $prefix = "p" } # pico
+        elsif ($rank == -4) { $prefix = "f" } # femto
+        elsif ($rank == -5) { $prefix = "a" } # atto
+        elsif ($rank == -6) { $prefix = "z" } # zepto
+        elsif ($rank <= -7) { $prefix = "y" } # yocto
+    }
 
     my $prec = $opts->{precision} // 1;
-    $num = $num / $base**($rank <= 0 && $num < 1 ? $rank-1 : $rank);
+    $num = $num / $base**($rank <= 0 && abs($num) < 1 ? $rank-1 : $rank);
     if ($opts->{return_array}) {
         return [$num, $prefix];
     } else {
