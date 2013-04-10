@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Utils
 
+0.37    2013-04-10 (SHARYANTO)
+
+        No functional changes. Tweak internal/private option for
+        format_metric() for dux.
+
+
 0.36    2013-04-10 (SHARYANTO)
 
         - Add module: SHARYANTO::Number::Util (format_metric()).
