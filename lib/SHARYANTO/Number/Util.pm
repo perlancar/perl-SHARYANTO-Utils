@@ -10,9 +10,9 @@ use warnings;
 
 require Exporter;
 our @ISA       = qw(Exporter);
-our @EXPORT_OK = qw(format_prefix);
+our @EXPORT_OK = qw(format_metric);
 
-sub format_prefix {
+sub format_metric {
     my ($num, $opts) = @_;
     $opts //= {};
     $opts->{base} //= 2;
@@ -57,14 +57,14 @@ sub format_prefix {
 
 =head1 FUNCTIONS
 
-=head2 format_prefix($num, \%opts) => STR
+=head2 format_metric($num, \%opts) => STR
 
 Format C<$num> using metric prefix, e.g.:
 
- format_prefix(14     , {base=>10});               # => "14"
- format_prefix(12000  , {base=> 2, precision=>1}); # => "11.7K"
- format_prefix(12000  , {base=>10, precision=>1}); # => "11.7Ki"
- format_prefix(-0.0017, {base=>10});               # => "1.7m"
+ format_metric(14     , {base=>10});               # => "14"
+ format_metric(12000  , {base=> 2, precision=>1}); # => "11.7K"
+ format_metric(12000  , {base=>10, precision=>1}); # => "11.7Ki"
+ format_metric(-0.0017, {base=>10});               # => "1.7m"
 
 Known options:
 
