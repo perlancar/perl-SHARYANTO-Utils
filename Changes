@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.38    2013-04-10 (SHARYANTO)
+
+        No functional changes. Bug fixes for format_metric().
+
+
 0.37    2013-04-10 (SHARYANTO)
 
         No functional changes. Tweak internal/private option for
