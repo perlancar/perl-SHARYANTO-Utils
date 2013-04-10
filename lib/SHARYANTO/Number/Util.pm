@@ -41,12 +41,12 @@ sub format_metric {
     elsif ($rank <= -7) { $prefix = "y" } # yocto
 
     my $prec = $opts->{precision} // 1;
-    $num = sprintf("%.${prec}f", $num /
-                       $base**($rank <= 0 && $num < 1 ? $rank-1 : $rank));
+    $num = $num / $base**($rank <= 0 && $num < 1 ? $rank-1 : $rank);
     if ($opts->{return_array}) {
         return [$num, $prefix];
     } else {
-        return $num . $prefix;
+        my $snum = sprintf("%.${prec}f", $num);
+        return $snum . $prefix;
     }
 }
 
