@@ -1,6 +1,11 @@
 Revision history for SHARYANTO-Utils
 
-0.39    2013-04-10 (SHARYANTO)
+0.40    2013-04-28 (SHARYANTO)
+
+        - Color::Util: add function rand_rgb_color().
+
+
+0.39    2013-04-27 (SHARYANTO)
 
         - Add module: SHARYANTO::Color::Util (mix_2_rgb_colors()).
 
