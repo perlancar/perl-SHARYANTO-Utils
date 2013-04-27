@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.39    2013-04-10 (SHARYANTO)
+
+        - Add module: SHARYANTO::Color::Util (mix_2_rgb_colors()).
+
+
 0.38    2013-04-10 (SHARYANTO)
 
         No functional changes. Bug fixes for format_metric().
