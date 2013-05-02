@@ -6,7 +6,11 @@ use warnings;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(mix_2_rgb_colors rand_rgb_color);
+our @EXPORT_OK = qw(
+                       mix_2_rgb_colors
+                       rand_rgb_color
+                       rgb2grayscale
+               );
 
 # VERSION
 
@@ -56,18 +60,38 @@ sub rand_rgb_color {
                );
 }
 
+sub rgb2grayscale {
+    my ($rgb) = @_;
+
+    $rgb =~ /^#?([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})$/o
+        or die "Invalid rgb color, must be in 'ffffff' form";
+    my $r = hex($1);
+    my $g = hex($2);
+    my $b = hex($3);
+
+    # basically we just average the R, G, B
+    my $avg = int(($r + $g + $b)/3);
+    return sprintf("%02x%02x%02x", $avg, $avg, $avg);
+}
+
 1;
 # ABSTRACT: Color-related utilities
 
 =head1 SYNOPSIS
 
- use SHARYANTO::Color::Util qw(mix_2_rgb_colors rand_rgb_color);
+ use SHARYANTO::Color::Util qw(
+     mix_2_rgb_colors
+     rand_rgb_color
+     rgb2grayscale
+ );
 
  say mix_2_rgb_colors('#ff0000', '#ffffff');     # pink (red + white)
  say mix_2_rgb_colors('ff0000', 'ffffff', 0.75); # pink with a whiter shade
 
  say rand_rgb_color();
  say rand_rgb_color('000000', '333333');         # limit range
+
+ say rgb2grayscale('ff3322');                    # =>
 
 
 =head1 DESCRIPTION
@@ -86,6 +110,10 @@ the closer to 1 the closer the resulting color to C<$rgb2>.
 
 Generate a random RGB color. You can specify the limit. Otherwise, they default
 to the full range (000000 to ffffff).
+
+=head2 rgb2grayscale($rgb) => RGB
+
+Convert C<$rgb> to grayscale RGB value.
 
 
 =head1 TODO
