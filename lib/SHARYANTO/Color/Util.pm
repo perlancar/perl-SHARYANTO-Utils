@@ -9,6 +9,7 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
                        mix_2_rgb_colors
                        rand_rgb_color
+                       reverse_rgb_color
                        rgb2grayscale
                        rgb2sepia
                );
@@ -93,6 +94,19 @@ sub rgb2sepia {
     return sprintf("%02x%02x%02x", $or, $og, $ob);
 }
 
+sub reverse_rgb_color {
+
+    my ($rgb) = @_;
+
+    $rgb =~ /^#?([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})$/o
+        or die "Invalid rgb color, must be in 'ffffff' form";
+    my $r = hex($1);
+    my $g = hex($2);
+    my $b = hex($3);
+
+    return sprintf("%02x%02x%02x", 255-$r, 255-$g, 255-$b);
+}
+
 1;
 # ABSTRACT: Color-related utilities
 
@@ -103,6 +117,7 @@ sub rgb2sepia {
      rand_rgb_color
      rgb2grayscale
      rgb2sepia
+     reverse_rgb_color
  );
 
  say mix_2_rgb_colors('#ff0000', '#ffffff');     # pink (red + white)
@@ -111,7 +126,11 @@ sub rgb2sepia {
  say rand_rgb_color();
  say rand_rgb_color('000000', '333333');         # limit range
 
- say rgb2grayscale('ff3322');                    # =>
+ say rgb2grayscale('0033CC');                    # => 555555
+
+ say rgb2sepia('0033CC');                        # => 4d4535
+
+ say reverse_rgb_color('0033CC');                # => ffcc33
 
 
 =head1 DESCRIPTION
@@ -138,6 +157,10 @@ Convert C<$rgb> to grayscale RGB value.
 =head2 rgb2sepia($rgb) => RGB
 
 Convert C<$rgb> to sepia tone RGB value.
+
+=head2 reverse_rgb_color($rgb) => RGB
+
+Reverse C<$rgb>.
 
 
 =head1 TODO

@@ -9,6 +9,7 @@ use SHARYANTO::Color::Util qw(
                                  rand_rgb_color
                                  rgb2grayscale
                                  rgb2sepia
+                                 reverse_rgb_color
                          );
 use Test::More 0.98;
 
@@ -30,6 +31,10 @@ subtest rgb2grayscale => sub {
 
 subtest rgb2sepia => sub {
     is(rgb2sepia('0033CC'), '4d4535');
+};
+
+subtest reverse_rgb_color => sub {
+    is(reverse_rgb_color('0033CC'), 'ffcc33');
 };
 
 DONE_TESTING:
