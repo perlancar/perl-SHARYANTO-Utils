@@ -8,6 +8,7 @@ use SHARYANTO::Color::Util qw(
                                  mix_2_rgb_colors
                                  rand_rgb_color
                                  rgb2grayscale
+                                 rgb2sepia
                          );
 use Test::More 0.98;
 
@@ -25,6 +26,10 @@ subtest rand_rgb_color => sub {
 
 subtest rgb2grayscale => sub {
     is(rgb2grayscale('0033CC'), '555555');
+};
+
+subtest rgb2sepia => sub {
+    is(rgb2sepia('0033CC'), '4d4535');
 };
 
 DONE_TESTING:

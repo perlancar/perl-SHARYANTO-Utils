@@ -10,6 +10,7 @@ our @EXPORT_OK = qw(
                        mix_2_rgb_colors
                        rand_rgb_color
                        rgb2grayscale
+                       rgb2sepia
                );
 
 # VERSION
@@ -74,6 +75,24 @@ sub rgb2grayscale {
     return sprintf("%02x%02x%02x", $avg, $avg, $avg);
 }
 
+sub rgb2sepia {
+
+    my ($rgb) = @_;
+
+    $rgb =~ /^#?([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})$/o
+        or die "Invalid rgb color, must be in 'ffffff' form";
+    my $r = hex($1);
+    my $g = hex($2);
+    my $b = hex($3);
+
+    # reference: http://www.techrepublic.com/blog/howdoi/how-do-i-convert-images-to-grayscale-and-sepia-tone-using-c/120
+    my $or = ($r*0.393) + ($g*0.769) + ($b*0.189);
+    my $og = ($r*0.349) + ($g*0.686) + ($b*0.168);
+    my $ob = ($r*0.272) + ($g*0.534) + ($b*0.131);
+    for ($or, $og, $ob) { $_ = 255 if $_ > 255 }
+    return sprintf("%02x%02x%02x", $or, $og, $ob);
+}
+
 1;
 # ABSTRACT: Color-related utilities
 
@@ -83,6 +102,7 @@ sub rgb2grayscale {
      mix_2_rgb_colors
      rand_rgb_color
      rgb2grayscale
+     rgb2sepia
  );
 
  say mix_2_rgb_colors('#ff0000', '#ffffff');     # pink (red + white)
@@ -114,6 +134,10 @@ to the full range (000000 to ffffff).
 =head2 rgb2grayscale($rgb) => RGB
 
 Convert C<$rgb> to grayscale RGB value.
+
+=head2 rgb2sepia($rgb) => RGB
+
+Convert C<$rgb> to sepia tone RGB value.
 
 
 =head1 TODO
