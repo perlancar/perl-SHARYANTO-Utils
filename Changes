@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.41    2013-05-02 (SHARYANTO)
+
+        - Color::Util: add functions rgb2grayscale() and rgb2sepia().
+
+
 0.40    2013-04-28 (SHARYANTO)
 
         - Color::Util: add function rand_rgb_color().
