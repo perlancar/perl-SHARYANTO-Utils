@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.42    2013-05-02 (SHARYANTO)
+
+        - Color::Util: add function reverse_rgb_color().
+
+
 0.41    2013-05-02 (SHARYANTO)
 
         - Color::Util: add functions rgb2grayscale() and rgb2sepia().
