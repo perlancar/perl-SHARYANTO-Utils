@@ -1,5 +1,13 @@
 Revision history for SHARYANTO-Utils
 
+0.44    2013-05-09 (SHARYANTO)
+
+        [BUG FIXES]
+
+        - Proc::Util: get_parent_processes should not return information on
+          current process.
+
+
 0.43    2013-05-09 (SHARYANTO)
 
         - Add module: SHARYANTO::Proc::Util (get_parent_processes).

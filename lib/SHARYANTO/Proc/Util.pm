@@ -8,6 +8,8 @@ require Exporter;
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(get_parent_processes);
 
+# VERSION
+
 sub get_parent_processes {
     my ($pid) = @_;
     $pid //= $$;
