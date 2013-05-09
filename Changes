@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.43    2013-05-09 (SHARYANTO)
+
+        - Add module: SHARYANTO::Proc::Util (get_parent_processes).
+
+
 0.42    2013-05-02 (SHARYANTO)
 
         - Color::Util: add function reverse_rgb_color().
