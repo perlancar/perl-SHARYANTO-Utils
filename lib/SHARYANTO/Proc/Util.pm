@@ -44,6 +44,7 @@ sub get_parent_processes {
         $cur_pid = $proc{$cur_pid}{ppid};
         last unless $cur_pid;
     }
+    shift @p; # delete cur process
 
     \@p;
 }
