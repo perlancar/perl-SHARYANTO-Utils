@@ -71,13 +71,13 @@ Project class. Defaults to $class::I18N.
 =head2 lh
 
 The language handle, where you ask for localized text using
-C<lh->maketext(...)>.
+C<< lh->maketext(...) >>.
 
 
 =head1 METHODS
 
 =head2 $doc->loc(@args) => STR
 
-Shortcut for C<$doc->lh->maketext(@args)>.
+Shortcut for C<< $doc->lh->maketext(@args) >>.
 
 =cut
