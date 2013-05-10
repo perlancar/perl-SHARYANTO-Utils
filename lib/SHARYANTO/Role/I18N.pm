@@ -48,6 +48,17 @@ sub loc {
     $self->lh->maketext(@args);
 }
 
+sub locopt {
+    my ($self, @args) = @_;
+    my $res = eval {
+        $self->lh->maketext(@args);
+    };
+    if ($@) {
+        return $args[0];
+    } else {
+        return $res;
+    }
+}
 
 1;
 # ABSTRACT: Role for internationalized class
@@ -79,5 +90,10 @@ C<< lh->maketext(...) >>.
 =head2 $doc->loc(@args) => STR
 
 Shortcut for C<< $doc->lh->maketext(@args) >>.
+
+=head2 $doc->locopt(@args) => STR
+
+Like loc(), but will trap missing translation. So instead of dying, it will
+return $args[0] instead.
 
 =cut
