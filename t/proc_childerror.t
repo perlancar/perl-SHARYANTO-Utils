@@ -6,6 +6,9 @@ use warnings;
 
 use Test::More 0.96;
 
+plan skip_all => "Unix only"
+    if $^O =~ /MSWin32/;
+
 use SHARYANTO::Proc::ChildError qw(explain_child_error);
 
 like(explain_child_error(-1), qr/^failed to execute: \(-1\)/);
