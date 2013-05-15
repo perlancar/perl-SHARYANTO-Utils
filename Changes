@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.46    2013-05-15 (SHARYANTO)
+
+        - Role::I18N: add method locopt().
+
+        - Proc::ChildError: Skip failing tests on Windows [CT].
+
+
 0.45    2013-05-10 (SHARYANTO)
 
         - Add module: SHARYANTO::Getopt::Long::Util (gospec2human).
