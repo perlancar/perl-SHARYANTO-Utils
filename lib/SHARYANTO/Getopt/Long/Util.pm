@@ -41,7 +41,7 @@ sub gospec2human {
     $res;
 }
 
-# ASBTRACT: Utilities for Getopt::Long
+#ABSTRACT: Utilities for Getopt::Long
 
 =head1 FUNCTIONS
 
