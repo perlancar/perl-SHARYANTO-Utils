@@ -10,6 +10,7 @@ use SHARYANTO::Color::Util qw(
                                  rgb2grayscale
                                  rgb2sepia
                                  reverse_rgb_color
+                                 rgb_luminance
                          );
 use Test::More 0.98;
 
@@ -35,6 +36,12 @@ subtest rgb2sepia => sub {
 
 subtest reverse_rgb_color => sub {
     is(reverse_rgb_color('0033CC'), 'ffcc33');
+};
+
+subtest rgb_luminance => sub {
+    ok(abs(0      - rgb_luminance('000000')) < 0.001);
+    ok(abs(1      - rgb_luminance('ffffff')) < 0.001);
+    ok(abs(0.6254 - rgb_luminance('d090aa')) < 0.001);
 };
 
 DONE_TESTING:

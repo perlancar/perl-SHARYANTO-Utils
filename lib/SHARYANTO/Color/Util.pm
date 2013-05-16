@@ -12,6 +12,7 @@ our @EXPORT_OK = qw(
                        reverse_rgb_color
                        rgb2grayscale
                        rgb2sepia
+                       rgb_luminance
                );
 
 # VERSION
@@ -77,7 +78,6 @@ sub rgb2grayscale {
 }
 
 sub rgb2sepia {
-
     my ($rgb) = @_;
 
     $rgb =~ /^#?([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})$/o
@@ -95,7 +95,6 @@ sub rgb2sepia {
 }
 
 sub reverse_rgb_color {
-
     my ($rgb) = @_;
 
     $rgb =~ /^#?([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})$/o
@@ -105,6 +104,18 @@ sub reverse_rgb_color {
     my $b = hex($3);
 
     return sprintf("%02x%02x%02x", 255-$r, 255-$g, 255-$b);
+}
+
+sub rgb_luminance {
+    my ($rgb) = @_;
+
+    $rgb =~ /^#?([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})$/o
+        or die "Invalid rgb color, must be in 'ffffff' form";
+    my $r = hex($1)/255;
+    my $g = hex($2)/255;
+    my $b = hex($3)/255;
+
+    return 0.2126*$r + 0.7152*$g + 0.0722*$b;
 }
 
 1;
@@ -118,6 +129,7 @@ sub reverse_rgb_color {
      rgb2grayscale
      rgb2sepia
      reverse_rgb_color
+     rgb_luminance
  );
 
  say mix_2_rgb_colors('#ff0000', '#ffffff');     # pink (red + white)
@@ -131,6 +143,8 @@ sub reverse_rgb_color {
  say rgb2sepia('0033CC');                        # => 4d4535
 
  say reverse_rgb_color('0033CC');                # => ffcc33
+
+ say rgb_luminance('d090aa');                    # => ffcc33
 
 
 =head1 DESCRIPTION
@@ -161,6 +175,14 @@ Convert C<$rgb> to sepia tone RGB value.
 =head2 reverse_rgb_color($rgb) => RGB
 
 Reverse C<$rgb>.
+
+=head2 rgb_luminance($rgb) => NUM
+
+Calculate standard/objective luminance from RGB value using this formula:
+
+ (0.2126*R) + (0.7152*G) + (0.0722*B)
+
+where R, G, and B range from 0 to 1. Return a number from 0 to 1.
 
 
 =head1 TODO
