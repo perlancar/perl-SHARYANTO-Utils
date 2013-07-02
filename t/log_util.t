@@ -3,6 +3,7 @@
 use 5.010;
 use strict;
 use warnings;
+use experimental 'smartmatch';
 
 use Test::More 0.96;
 
