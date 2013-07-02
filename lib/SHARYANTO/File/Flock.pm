@@ -99,7 +99,7 @@ sub unlock {
 
 sub DESTROY {
     my $self = shift;
-    unlink $self->{path} if $self->{unlink};
+    unlink $self->{path} if $self->{_fh} && $self->{unlink};
     $self->_unlock;
 }
 
@@ -174,6 +174,11 @@ Unlock.
 =head2 $lock->release
 
 Synonym for unlock().
+
+=head2 DESTROY
+
+When C<unlink> option is set to true, will unlink lock file during object
+destruction. Will only do so if current process holds the lock.
 
 
 =head1 CAVEATS
