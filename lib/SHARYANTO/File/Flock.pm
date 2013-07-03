@@ -15,7 +15,6 @@ sub lock {
 
     defined($path) or die "Please specify path";
     $h{path}    = $path;
-    $h{unlink}  = $opts->{unlink}  //  1;
     $h{retries} = $opts->{retries} // 60;
 
     my $self = bless \%h, $class;
@@ -31,6 +30,7 @@ sub _lock {
     return 0 if $self->{_fh};
 
     my $path = $self->{path};
+    my $existed = -f $path;
     my $exists;
     my $tries = 0;
   TRY:
@@ -69,6 +69,7 @@ sub _lock {
             sleep 1;
         }
     }
+    $self->{_created} = !$existed;
     1;
 }
 
@@ -81,7 +82,7 @@ sub _unlock {
     # don't unlock if we are not holding the lock
     return 0 unless $self->{_fh};
 
-    unlink $self->{path} if $self->{unlink};
+    unlink $self->{path} if $self->{_created} && !(-s $self->{path});
 
     {
         # to shut up warning about flock on closed filehandle (XXX but why
@@ -130,21 +131,18 @@ sub DESTROY {
 
 =head1 DESCRIPTION
 
-This is yet another flock module. The name (under SHARYANTO:: namespace) is
-probably temporary. The module is quite tiny like L<File::Flock::Tiny>, but
-different in the following ways:
+This is yet another flock module. It is a more lightweight alternative to
+L<File::Flock> with some other differences:
 
 =over 4
 
-=item * Can be instructed to unlink the lock file upon release
+=item * OO interface only
 
-=item * Does retries (by default for 60s) when trying to acquire lock
+=item * Autoretry (by default for 60s) when trying to acquire lock
 
-I prefer this approach to blocking/waiting indefinitely.
+I prefer this approach to blocking/waiting indefinitely or failing immediately.
 
 =back
-
-I wrote this module as a more lightweight alternative to L<File::Flock>.
 
 
 =head1 METHODS
@@ -155,19 +153,13 @@ Acquire an exclusive lock on C<$path>. C<$path> will be created if not already
 exists. If $path is already locked by another process, will retry (by default
 for 60 seconds). Will die if failed to acquire lock.
 
-Will automatically unlock if C<$lock> goes out of scope.
+Will automatically unlock if C<$lock> goes out of scope. Upon unlock, will
+remove C<$path> if it was created and is still empty (this behavior is the same
+as File::Flock).
 
 Available options:
 
 =over
-
-=item * unlink => BOOL (default: 1)
-
-If set to true, will unlink C<$path> when releasing the lock. This is convenient
-to clean created lock files, and so is the default behavior.
-
-If set to false, will not unlink lock files. You'll need to remove lock files
-manually.
 
 =item * retries => INT (default: 60)
 
@@ -183,11 +175,6 @@ Unlock.
 
 Synonym for unlock().
 
-=head2 DESTROY
-
-When C<unlink> option is set to true, will unlink lock file during object
-destruction. Will only do so if current process is holding the lock.
-
 
 =head1 CAVEATS
 
@@ -196,9 +183,7 @@ Not yet tested on Windows. Some filesystems do not support inode?
 
 =head1 SEE ALSO
 
-L<File::Flock>, this module has a simple interface which I like. I still use
-this module but wrote SHARYANTO::File::Flock as a more lightweight alternative
-to it.
+L<File::Flock>
 
 L<File::Flock::Tiny> which is also tiny, but does not have the autoremove and
 autoretry capability which I want. See also:

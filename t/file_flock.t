@@ -16,7 +16,7 @@ use SHARYANTO::File::Flock;
 my $dir = abs_path(tempdir(CLEANUP=>1));
 $CWD = $dir;
 
-subtest "create, opt:unlink=1 (unlocked)" => sub {
+subtest "create (unlocked)" => sub {
     ok(!(-f "f1"), "f1 doesn't exist before lock");
     my $lock = SHARYANTO::File::Flock->lock("f1");
     ok((-f "f1"), "f1 exists after lock");
@@ -24,7 +24,7 @@ subtest "create, opt:unlink=1 (unlocked)" => sub {
     ok(!(-f "f1"), "f1 doesn't exist after unlock");
 };
 
-subtest "create, opt:unlink=1 (destroyed)" => sub {
+subtest "create (destroyed)" => sub {
     ok(!(-f "f1"), "f1 doesn't exist before lock");
     my $lock = SHARYANTO::File::Flock->lock("f1");
     ok((-f "f1"), "f1 exists after lock");
@@ -32,36 +32,23 @@ subtest "create, opt:unlink=1 (destroyed)" => sub {
     ok(!(-f "f1"), "f1 doesn't exist after DESTROY");
 };
 
-subtest "already exists, opt:unlink=1" => sub {
+subtest "already exists" => sub {
     write_file("f1", "");
     ok((-f "f1"), "f1 exists before lock");
     my $lock = SHARYANTO::File::Flock->lock("f1");
     ok((-f "f1"), "f1 exists after lock");
     undef $lock;
-    ok(!(-f "f1"), "f1 doesn't exist after DESTROY");
+    ok((-f "f1"), "f1 still exists after DESTROY");
+    unlink "f1";
 };
 
-subtest "create, opt:unlink=0" => sub {
+subtest "was created, but not empty" => sub {
     ok(!(-f "f1"), "f1 doesn't exist before lock");
-    my $lock = SHARYANTO::File::Flock->lock("f1", {unlink=>0});
+    my $lock = SHARYANTO::File::Flock->lock("f1");
     ok((-f "f1"), "f1 exists after lock");
-    $lock->unlock;
-    ok((-f "f1"), "f1 still exists after unlock");
+    { open my $f1, ">>", "f1"; print $f1 "a"; close $f1 }
     undef $lock;
     ok((-f "f1"), "f1 still exists after DESTROY");
-    unlink "f1";
-};
-
-subtest "already exists, opt:unlink=0" => sub {
-    write_file("f1", "");
-    ok((-f "f1"), "f1 exists before lock");
-    my $lock = SHARYANTO::File::Flock->lock("f1", {unlink=>0});
-    ok((-f "f1"), "f1 exists after lock");
-    $lock->unlock;
-    ok((-f "f1"), "f1 still exists after unlock");
-    undef $lock;
-    ok((-f "f1"), "f1 still exists after DESTROY");
-    unlink "f1";
 };
 
 DONE_TESTING:
