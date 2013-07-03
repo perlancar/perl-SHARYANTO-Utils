@@ -39,7 +39,15 @@ subtest "already exists" => sub {
     unlink "f1";
 };
 
-subtest "create + opt:unlink" => sub {
+subtest "create + opt:unlink (unlinked)" => sub {
+    ok(!(-f "f1"), "f1 doesn't exist");
+    my $lock = SHARYANTO::File::Flock->lock("f1", {unlink=>1});
+    ok((-f "f1"), "f1 exists");
+    $lock->unlock;
+    ok(!(-f "f1"), "f1 doesn't exist after DESTROY");
+};
+
+subtest "create + opt:unlink (destroyed)" => sub {
     ok(!(-f "f1"), "f1 doesn't exist");
     my $lock = SHARYANTO::File::Flock->lock("f1", {unlink=>1});
     ok((-f "f1"), "f1 exists");
