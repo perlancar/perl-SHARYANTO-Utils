@@ -144,6 +144,8 @@ I prefer this approach to blocking/waiting indefinitely.
 
 =back
 
+I wrote this module as a more lightweight alternative to L<File::Flock>.
+
 
 =head1 METHODS
 
@@ -194,12 +196,14 @@ Not yet tested on Windows. Some filesystems do not support inode?
 
 =head1 SEE ALSO
 
-L<File::Flock>
+L<File::Flock>, this module has a simple interface which I like. I still use
+this module but wrote SHARYANTO::File::Flock as a more lightweight alternative
+to it.
 
-L<File::Flock::Tiny>
+L<File::Flock::Tiny> which is also tiny, but does not have the autoremove and
+autoretry capability which I want. See also:
+https://github.com/trinitum/perl-File-Flock-Tiny/issues/1
 
 flock() Perl function.
-
-https://github.com/trinitum/perl-File-Flock-Tiny/issues/1
 
 =cut
