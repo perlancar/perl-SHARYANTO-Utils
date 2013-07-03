@@ -49,3 +49,10 @@ subtest "create + opt:unlink" => sub {
 
 DONE_TESTING:
 done_testing();
+if (Test::More->builder->is_passing) {
+    diag "all tests successful, deleting test data dir";
+    $CWD = "/";
+} else {
+    # don't delete test data dir if there are errors
+    diag "there are failing tests, not deleting test data dir $dir";
+}
