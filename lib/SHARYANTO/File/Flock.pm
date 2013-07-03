@@ -78,9 +78,16 @@ sub _unlock {
 
     my $path = $self->{path};
 
+    # don't unlock if we are not holding the lock
     return 0 unless $self->{_fh};
+
+    unlink $self->{path} if $self->{unlink};
+
     {
-        no warnings; # to shut up warning about flock on closed filehandle
+        # to shut up warning about flock on closed filehandle (XXX but why
+        # closed if we are holding the lock?)
+        no warnings;
+
         flock $self->{_fh}, LOCK_UN;
     }
     close delete($self->{_fh});
@@ -99,7 +106,6 @@ sub unlock {
 
 sub DESTROY {
     my $self = shift;
-    unlink $self->{path} if $self->{_fh} && $self->{unlink};
     $self->_unlock;
 }
 
