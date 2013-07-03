@@ -1,5 +1,15 @@
 Revision history for SHARYANTO-Utils
 
+0.50    2013-07-03 (SHARYANTO)
+
+        [INCOMPATIBLE CHANGES]
+
+        - File::Flock: be more like the original File::Flock by removing lock
+          file only if lock file was created during lock, and is empty. This
+          module is created as a more lightweight alternative to the original
+          File::Flock after all.
+
+
 0.49    2013-07-03 (SHARYANTO)
 
         [INCOMPATIBLE CHANGES]
