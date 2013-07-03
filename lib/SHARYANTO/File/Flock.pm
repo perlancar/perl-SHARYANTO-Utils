@@ -124,7 +124,7 @@ sub DESTROY {
  # automatically release the lock if object is DESTROY-ed.
  undef $lock;
 
- # set number of retries and unlink lock file during DESTROY.
+ # set number of retries and unlink lock file on unlock/DESTROY
  $lock = SHARYANTO::File::Flock->lock($path, {retries=>30, unlink=>1});
 
  # explicitly unlock
@@ -139,7 +139,7 @@ different in the following ways:
 
 =over 4
 
-=item * Can be instructed to unlink the lock file during DESTROY
+=item * Can be instructed to unlink the created lock file upon release
 
 =item * Does retries (by default for 60s) when trying to acquire lock
 
@@ -164,8 +164,8 @@ Available options:
 
 =item * unlink => BOOL (default: 0)
 
-If set to true, will unlink C<$path> when unlinking. This is convenient to clean
-lock files.
+If set to true, will unlink C<$path> when releasing the lock if file is created
+during locking. This is convenient to clean lock files.
 
 =item * retries => INT (default: 60)
 
