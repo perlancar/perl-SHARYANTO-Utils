@@ -15,7 +15,7 @@ sub lock {
 
     defined($path) or die "Please specify path";
     $h{path}    = $path;
-    $h{unlink}  = $opts->{unlink}  //  0;
+    $h{unlink}  = $opts->{unlink}  //  1;
     $h{retries} = $opts->{retries} // 60;
 
     my $self = bless \%h, $class;
@@ -121,14 +121,11 @@ sub DESTROY {
  # try to acquire exclusive lock. if fail to acquire lock within 60s, die.
  my $lock = SHARYANTO::File::Flock->lock($file);
 
- # automatically release the lock if object is DESTROY-ed.
- undef $lock;
-
- # set number of retries and unlink lock file on unlock/DESTROY
- $lock = SHARYANTO::File::Flock->lock($path, {retries=>30, unlink=>1});
-
  # explicitly unlock
  $lock->release;
+
+ # automatically unlock if object is DESTROY-ed.
+ undef $lock;
 
 
 =head1 DESCRIPTION
@@ -139,7 +136,7 @@ different in the following ways:
 
 =over 4
 
-=item * Can be instructed to unlink the created lock file upon release
+=item * Can be instructed to unlink the lock file upon release
 
 =item * Does retries (by default for 60s) when trying to acquire lock
 
@@ -162,10 +159,13 @@ Available options:
 
 =over
 
-=item * unlink => BOOL (default: 0)
+=item * unlink => BOOL (default: 1)
 
-If set to true, will unlink C<$path> when releasing the lock if file is created
-during locking. This is convenient to clean lock files.
+If set to true, will unlink C<$path> when releasing the lock. This is convenient
+to clean created lock files, and so is the default behavior.
+
+If set to false, will not unlink lock files. You'll need to remove lock files
+manually.
 
 =item * retries => INT (default: 60)
 
@@ -184,7 +184,7 @@ Synonym for unlock().
 =head2 DESTROY
 
 When C<unlink> option is set to true, will unlink lock file during object
-destruction. Will only do so if current process holds the lock.
+destruction. Will only do so if current process is holding the lock.
 
 
 =head1 CAVEATS
