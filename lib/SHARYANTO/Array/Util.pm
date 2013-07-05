@@ -3,6 +3,7 @@ package SHARYANTO::Array::Util;
 use 5.010;
 use strict;
 use warnings;
+use experimental 'smartmatch';
 use Data::Clone;
 
 require Exporter;
