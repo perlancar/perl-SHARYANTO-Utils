@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.51    2013-07-12 (SHARYANTO)
+
+        - Add module: Data::Util.
+
+        - Skip File::Flock test on Windows [CT#86829].
+
+
 0.50    2013-07-03 (SHARYANTO)
 
         [INCOMPATIBLE CHANGES]
