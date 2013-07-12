@@ -7,18 +7,39 @@ use warnings;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(has_circular_ref);
+our @EXPORT_OK = qw(clone_circular_refs);
 
 # VERSION
 
 our %SPEC;
 
-$SPEC{has_circular_ref} = {
+$SPEC{clone_circular_refs} = {
     v => 1.1,
-    summary => 'Check whether data item contains circular references',
+    summary => 'Remove circular references by deep-copying them',
     description => <<'_',
 
-Does not deal with weak references.
+For example, this data:
+
+    $x = [1];
+    $data = [$x, 2, $x];
+
+contains circular references by referring to `$x` twice. After
+`clone_circular_refs`, data will become:
+
+    $data = [$x, 2, [1]];
+
+that is, the subsequent circular references will be deep-copied. This makes it
+safe to transport to JSON, for example.
+
+Sometimes it doesn't work, for example:
+
+    $data = [1];
+    push @$data, $data;
+
+Cloning will still create circular references.
+
+This function modifies the data structure in-place, and return true for success
+and false upon failure.
 
 _
     args_as => 'array',
@@ -31,29 +52,39 @@ _
     },
     result_naked => 1,
 };
-sub has_circular_ref {
+sub clone_circular_refs {
+    require Data::Structure::Util;
+    require Data::Clone;
+
     my ($data) = @_;
     my %refs;
-    my $check;
-    $check = sub {
+    my $doit;
+    $doit = sub {
         my $x = shift;
         my $r = ref($x);
-        return 0 if !$r;
-        return 1 if $refs{$r}++;
+        return if !$r;
         if ($r eq 'ARRAY') {
             for (@$x) {
                 next unless ref($_);
-                return 1 if $check->($_);
+                if ($refs{"$_"}++) {
+                    $_ = Data::Clone::clone($_);
+                } else {
+                    $doit->($_);
+                }
             }
         } elsif ($r eq 'HASH') {
-            for (values %$x) {
-                next unless ref($_);
-                return 1 if $check->($_);
+            for (keys %$x) {
+                next unless ref($x->{$_});
+                if ($refs{"$x->{$_}"}++) {
+                    $x->{$_} = Data::Clone::clone($x->{$_});
+                } else {
+                    $doit->($_);
+                }
             }
         }
-        0;
     };
-    $check->($data);
+    $doit->($data);
+    !Data::Structure::Util::has_circular_ref($data);
 }
 
 1;
@@ -72,9 +103,7 @@ None are exported by default, but they are exportable.
 
 =head1 SEE ALSO
 
-For checking circular references, use C<has_circular_ref> from
-L<Data::Structure::Util> which is the XS version (3 times or more faster than
-this module's implementation which is pure Perl). This module is however much
-faster than L<Devel::Cycle>.
+To check for circular references, try C<has_circular_ref> from
+L<Data::Structure::Util>. There is also L<Devel::Cycle> albeit far slower.
 
 =cut
