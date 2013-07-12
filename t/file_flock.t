@@ -13,6 +13,8 @@ use Test::More 0.96;
 use File::Temp qw(tempdir);
 use SHARYANTO::File::Flock;
 
+plan skip_all => 'Not tested on Windows yet' if $^O =~ /win32/i;
+
 my $dir = abs_path(tempdir(CLEANUP=>1));
 $CWD = $dir;
 
