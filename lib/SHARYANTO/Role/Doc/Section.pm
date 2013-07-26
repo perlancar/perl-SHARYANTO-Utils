@@ -8,9 +8,8 @@ use Moo::Role;
 
 has doc_sections => (is=>'rw');
 has doc_lines => (is => 'rw'); # store final result, array
-has doc_parse => (is => 'rw'); # store parsed items, hash
-has indent_level => (is => 'rw');
-has indent => (is => 'rw', default => sub{"  "}); # indent character
+has doc_indent_level => (is => 'rw');
+has doc_indent_str => (is => 'rw', default => sub{"  "}); # indent characters
 
 sub add_doc_section_before {
     my ($self, $name, $before) = @_;
@@ -62,41 +61,37 @@ sub delete_doc_section {
     }
 }
 
-sub inc_indent {
+sub inc_doc_indent {
     my ($self, $n) = @_;
     $n //= 1;
-    $self->{indent_level} += $n;
+    $self->{doc_indent_level} += $n;
 }
 
-sub dec_indent {
+sub dec_doc_indent {
     my ($self, $n) = @_;
     $n //= 1;
-    $self->{indent_level} -= $n;
-    die "BUG: Negative indent level" unless $self->{indent_level} >=0;
+    $self->{doc_indent_level} -= $n;
+    die "BUG: Negative doc indent level" unless $self->{doc_indent_level} >=0;
 }
 
-sub generate_doc {
+sub gen_doc {
     my ($self, %opts) = @_;
-    $log->tracef("-> generate_doc(opts=%s)", \%opts);
+    $log->tracef("-> gen_doc(opts=%s)", \%opts);
 
     $self->doc_lines([]);
-    $self->indent_level(0);
-    $self->doc_parse({});
+    $self->doc_indent_level(0);
 
-    $self->before_generate_doc(%opts) if $self->can("before_generate_doc");
+    $self->before_gen_doc(%opts) if $self->can("before_gen_doc");
 
     for my $s (@{ $self->doc_sections // [] }) {
-        my $meth = "doc_parse_$s";
-        $log->tracef("=> $meth()");
-        $self->$meth(%opts);
-        $meth = "doc_gen_$s";
+        my $meth = "gen_doc_section_$s";
         $log->tracef("=> $meth()");
         $self->$meth(%opts);
     }
 
-    $self->after_generate_doc(%opts) if $self->can("after_generate_doc");
+    $self->after_gen_doc(%opts) if $self->can("after_gen_doc");
 
-    $log->tracef("<- generate_doc()");
+    $log->tracef("<- gen_doc()");
     join("", @{ $self->doc_lines });
 }
 
@@ -107,16 +102,13 @@ sub generate_doc {
 
 SHARYANTO::Role::Doc::Section is a role for classes that produce documentation
 with sections. This role provides a workflow for parsing and generating
-sections, regulating indentation, and a C<generate_doc()> method.
+sections, regulating indentation, and a C<gen_doc()> method.
 
 To generate documentation, first you provide a list of section names in
-C<doc_sections>. Then you run C<generate_doc()>, which will call
-C<doc_parse_SECTION> and C<doc_gen_SECTION> methods for each section
-consecutively. C<doc_parse_*> is supposed to parse information from some source
-into a form readily usable in $self->doc_parse hash. C<doc_gen_*> is supposed to
-generate the actual section in the final documentation format, by appending
-lines of text to C<doc_lines>. Finally all the added lines is concatenated
-together and returned.
+C<doc_sections>. Then you run C<gen_doc()>, which will call
+C<gen_doc_section_SECTION()> method for each section consecutively, which is
+supposed to append lines of text to C<doc_lines>. Finally all the added lines is
+concatenated together and returned by C<gen_doc()>.
 
 This module uses L<Log::Any> for logging.
 
@@ -131,13 +123,9 @@ Should be set to the names of available sections.
 
 =head2 doc_lines => ARRAY
 
-=head2 doc_parse => HASH
+=head2 doc_indent_level => INT
 
-Store parse information.
-
-=head2 indent_level => INT
-
-=head2 indent => STR (default '  ' (two spaces))
+=head2 doc_indent_str => STR (default '  ' (two spaces))
 
 Character(s) used for indent.
 
@@ -150,33 +138,33 @@ Character(s) used for indent.
 
 =head2 delete_doc_section($name)
 
-=head2 inc_indent([N])
+=head2 inc_doc_indent([N])
 
-=head2 dec_indent([N])
+=head2 dec_doc_indent([N])
 
-=head2 generate_doc() => STR
+=head2 gen_doc() => STR
 
 Generate documentation.
 
-The method will first initialize C<doc_lines> to an empty array C<[]>,
-C<doc_parse> to empty hash C<{}>, and C<indent_level> to 0.
+The method will first initialize C<doc_lines> to an empty array C<[]> and
+C<doc_indent_level> to 0.
 
-It will then call C<before_generate_doc> if the hook method exists, to allow
-class to do stuffs prior to document generation. L<Perinci::To::Text> uses this,
-for example, to retrieve metadata from Riap server.
+It will then call C<before_gen_doc> if the hook method exists, to allow class to
+do stuffs prior to document generation. L<Perinci::To::Text> uses this, for
+example, to retrieve metadata from Riap server.
 
 Then, as described in L</"DESCRIPTION">, for each section listed in
-C<doc_sections> it will call C<doc_parse_SECTION> and C<doc_gen_SECTION>.
+C<doc_sections> it will call C<gen_doc_section_SECTION>.
 
-After that, it will call C<after_generate_doc> if the hook method exists, to
-allow class to do stuffs after document generation.
+After that, it will call C<after_gen_doc> if the hook method exists, to allow
+class to do stuffs after document generation.
 
 Lastly, it returns concatenated C<doc_lines>.
 
 
 =head1 SEE ALSO
 
-This module is used, among others, by: C<Perinci::To::*> modules.
+This role is used, among others, by: C<Perinci::To::*> modules.
 
 L<SHARYANTO::Role::Doc::Section::AddTextLines> which provides C<add_doc_lines>
 to add text with optional text wrapping.

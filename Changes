@@ -1,5 +1,18 @@
 Revision history for SHARYANTO-Utils
 
+0.53    2013-07-26 (SHARYANTO) (not yet released)
+
+        [INCOMPATIBLE CHANGES]
+
+        - Role::Doc::Section and Role::Doc::Section::AddTextLines: Rename
+          methods to become more consistent and less intrusive.
+          {,before_,after_}generate_doc() becomes {,before_,after_}gen_doc().
+          Rename doc_gen_*() to gen_doc_section_*(). Remove doc_parse_*()
+          methods as they are implementation details. Rename attributes
+          indent_level to doc_indent_level, indent to doc_indent_str, wrap to
+          doc_wrap.
+
+
 0.52    2013-07-26 (SHARYANTO)
 
         - Move Perinci::To::Text::AddDocLinesRole to

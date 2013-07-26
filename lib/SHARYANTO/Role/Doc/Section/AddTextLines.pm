@@ -7,7 +7,9 @@ use Moo::Role;
 # VERSION
 
 requires 'doc_lines';
-has wrap => (is => 'rw', default => sub {1});
+requires 'doc_indent_level';
+requires 'doc_indent_str';
+has doc_wrap => (is => 'rw', default => sub {1});
 
 sub add_doc_lines {
     my $self = shift;
@@ -23,8 +25,8 @@ sub add_doc_lines {
     #$c[1] =~ s!.+/!!;
     #@lines = map {"[from $c[1]:$c[2]]$_"} @ lines;
 
-    my $indent = $self->indent x $self->indent_level;
-    my $wrap = $opts->{wrap} // $self->wrap;
+    my $indent = $self->doc_indent_str x $self->doc_indent_level;
+    my $wrap = $opts->{wrap} // $self->doc_wrap;
 
     if ($wrap) {
         require Text::Wrap;
@@ -108,19 +110,37 @@ or 80.
 
 =head1 ATTRIBUTES
 
-=head2 wrap => BOOL (default: 1)
+=head2 doc_wrap => BOOL (default: 1)
 
 Whether to do text wrapping.
 
 
 =head1 REQUIRES
 
+These methods are provided by, e.g. L<SHARYANTO::Role::Doc::Section>.
+
 =head2 $o->doc_lines()
+
+=head2 $o->doc_indent_level()
+
+=head2 $o->doc_lines_str()
 
 
 =head1 METHODS
 
-=head2 $o->add_doc_lines([$opts, ]@lines)
+=head2 $o->add_doc_lines([\%opts, ]@lines)
+
+Add lines of text, optionally wrapping each line if wrapping is enabled.
+
+Available options:
+
+=over 4
+
+=item * wrap => BOOL
+
+Whether to enable wrapping. Default is from the C<doc_wrap> attribute.
+
+=back
 
 
 =head1 ENVIRONMENT
