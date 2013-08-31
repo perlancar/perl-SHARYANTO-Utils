@@ -130,7 +130,7 @@ sub croak {
 }
 
 1;
-__END__
+# ABSTRACT: Pick a YAML implementation and use it
 
 =head1 SYNOPSIS
 

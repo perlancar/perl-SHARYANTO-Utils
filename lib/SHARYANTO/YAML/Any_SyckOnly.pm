@@ -18,7 +18,7 @@ use YAML::Syck;
 $YAML::Syck::ImplicitTyping = 1;
 
 1;
-# ABSTRACT: Pick a YAML implementation and use it.
+# ABSTRACT: Pick a YAML implementation and use it
 __END__
 
 =for Pod::Coverage .*
