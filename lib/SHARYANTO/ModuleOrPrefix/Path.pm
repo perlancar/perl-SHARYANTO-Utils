@@ -81,4 +81,14 @@ sub module_or_prefix_path {
 
 The code is based on Neil Bower's L<Module::Path>.
 
+
+=head1 FUNCTIONS
+
+=head2 module_or_prefix_path(MODULE) => STR
+
+
+=head1 SEE ALSO
+
+L<Module::Path>
+
 =cut

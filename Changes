@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.54    2013-09-04 (SHARYANTO)
+
+        - Add module: ModuleOrPrefix::Path.
+
+
 0.53    2013-07-26 (SHARYANTO)
 
         [INCOMPATIBLE CHANGES]
