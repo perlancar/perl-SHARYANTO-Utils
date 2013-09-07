@@ -152,6 +152,15 @@ List subpackages, e.g.:
 If $recursive is true, will also list subpackages of subpackages, and so on.
 
 
+=head1 FAQ
+
+=head2 How to list all existing packages?
+
+You can recurse from the top, e.g.:
+
+ list_subpackages("", 1);
+
+
 =head1 SEE ALSO
 
 L<perlmod>
