@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.55    2013-09-07 (SHARYANTO)
+
+        - Package::Util: Avoid deep recursion in list_subpackages().
+
+
 0.54    2013-09-04 (SHARYANTO)
 
         - Add module: ModuleOrPrefix::Path.
