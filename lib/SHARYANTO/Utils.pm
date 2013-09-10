@@ -1,5 +1,7 @@
 package SHARYANTO::Utils;
 
+use 5.010001;
+
 # VERSION
 
 1;
