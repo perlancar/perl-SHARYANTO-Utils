@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.56    2013-09-11 (SHARYANTO)
+
+        - No functional changes. Slim dist down and split some modules to its
+          own dist. Make sure this module installs on Windows (I'm trying to
+          make Perinci::CmdLine work on Windows).
+
+
 0.55    2013-09-07 (SHARYANTO)
 
         - Package::Util: Avoid deep recursion in list_subpackages().
