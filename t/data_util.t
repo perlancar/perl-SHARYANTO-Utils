@@ -21,7 +21,6 @@ subtest clone_circular_refs => sub {
     ok(clone_circular_refs($a), "circ 1 status");
     is_deeply($a, [[], [], []], "circ 1 result");
 
-    my $a;
     $a = [1]; push @$a, $a;
     ok(!clone_circular_refs($a), "circ 2 status");
 };
