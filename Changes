@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.57    2013-09-25 (SHARYANTO)
+
+        - Add Role::{BorderStyle,ColorTheme,TermAttrs}, extracted from
+          Text::ANSITable. I wanted to make Perinci::CmdLine support color
+          themes too.
+
+
 0.56    2013-09-11 (SHARYANTO)
 
         - No functional changes. Slim dist down and split some modules to its

@@ -121,6 +121,10 @@ xo
 
 =head2 use_utf8 => BOOL (default: from env, or detected from terminal)
 
+=head2 use_box_chars => BOOL (default: from env, or detected from OS)
+
+Default is 0 for Windows.
+
 =head2 use_color => BOOL (default: from env, or detected from terminal)
 
 =head2 color_depth => INT (default: from env, or detected from terminal)
@@ -160,5 +164,7 @@ Can be used to set C<term_width>.
 =item * ROWS => INT
 
 Can be used to set C<term_height>.
+
+=back
 
 =cut
