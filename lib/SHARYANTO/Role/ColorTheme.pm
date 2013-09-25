@@ -120,7 +120,7 @@ sub themecol2ansi {
 
 sub get_theme_color_as_ansi {
     my ($self, $item_name, $args) = @_;
-    my $c = $self->get_theme_color() // '';
+    my $c = $self->get_theme_color($item_name, $args) // '';
     $self->themecol2ansi(
         $c, {name=>$item_name, %{ $args // {} }},
         $item_name =~ /_bg$/);
