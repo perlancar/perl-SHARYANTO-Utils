@@ -3,6 +3,11 @@ package SHARYANTO::Role::ColorTheme;
 use 5.010;
 use Moo::Role;
 
+require Win32::Console::ANSI if $^O =~ /Win/;
+use Color::ANSI::Util qw(ansi16fg ansi16bg
+                         ansi256fg ansi256bg
+                         ansi24bfg ansi24bbg);
+
 # VERSION
 
 with 'SHARYANTO::Role::TermAttrs';
@@ -55,6 +60,72 @@ sub get_color_theme {
     $cts->{$ct};
 }
 
+sub get_theme_color {
+    my ($self, $item_name, $args) = @_;
+
+    return undef if $self->{color_theme}{no_color};
+    return $self->{color_theme}{colors}{$item_name};
+}
+
+sub themecol2ansi {
+    my ($self, $c, $args, $is_bg) = @_;
+
+    $args //= {};
+    if (ref($c) eq 'CODE') {
+        $c = $c->($self, %$args);
+    }
+
+    # empty? skip
+    return '' if !defined($c) || !length($c);
+
+    if ($self->{color_depth} >= 2**24) {
+        if (ref $c) {
+            my $ansifg = $c->{ansi_fg};
+            $ansifg //= ansi24bfg($c->{fg}) if defined $c->{fg};
+            $ansifg //= "";
+            my $ansibg = $c->{ansi_bg};
+            $ansibg //= ansi24bbg($c->{bg}) if defined $c->{bg};
+            $ansibg //= "";
+            $c = $ansifg . $ansibg;
+        } else {
+            $c = $is_bg ? ansi24bbg($c) : ansi24bfg($c);
+        }
+    } elsif ($self->{color_depth} >= 256) {
+        if (ref $c) {
+            my $ansifg = $c->{ansi_fg};
+            $ansifg //= ansi256fg($c->{fg}) if defined $c->{fg};
+            $ansifg //= "";
+            my $ansibg = $c->{ansi_bg};
+            $ansibg //= ansi256bg($c->{bg}) if defined $c->{bg};
+            $ansibg //= "";
+            $c = $ansifg . $ansibg;
+        } else {
+            $c = $is_bg ? ansi256bg($c) : ansi256fg($c);
+        }
+    } else {
+        if (ref $c) {
+            my $ansifg = $c->{ansi_fg};
+            $ansifg //= ansi16fg($c->{fg}) if defined $c->{fg};
+            $ansifg //= "";
+            my $ansibg = $c->{ansi_bg};
+            $ansibg //= ansi16bg($c->{bg}) if defined $c->{bg};
+            $ansibg //= "";
+            $c = $ansifg . $ansibg;
+        } else {
+            $c = $is_bg ? ansi16bg($c) : ansi16fg($c);
+        }
+    }
+    $c;
+}
+
+sub get_theme_color_as_ansi {
+    my ($self, $item_name, $args) = @_;
+    my $c = $self->get_theme_color() // '';
+    $self->themecol2ansi(
+        $c, {name=>$item_name, %{ $args // {} }},
+        $item_name =~ /_bg$/);
+}
+
 sub list_color_themes {
     require Module::List;
     require Module::Load;
@@ -101,6 +172,25 @@ sub list_color_themes {
 This role is for class that wants to support color themes. For description about
 color themes, currently please refer to L<Text::ANSITable>.
 
+Color theme is a hash containing C<name> (str), C<summary> (str), C<no_color>
+(bool, should be set to 1 if this is a color theme without any colors), and
+C<colors> (hash, the colors for items).
+
+A color should be a scalar containing a single color code which is 6-hexdigit
+RGB color (e.g. C<ffc0c0>), or a hashref containing multiple color codes, or a
+coderef which should produce a color code (or a hash of color codes).
+
+Multiple color codes are keyed by: C<fg> (RGB value for foreground), C<bg> (RGB
+value for background), C<ansi_fg> (ANSI color escape code for foreground),
+C<ansi_bg> (ANSI color escape code for background). Future keys like C<css> will
+be defined.
+
+Allowing coderef as color allows for flexibility, e.g. for doing gradation
+border color, random color, etc (see L<Text::ANSITable::ColorTheme::Demo> for an
+example). Code will be called with C<< ($self, %args) >> where C<%args> contains
+various information, like C<name> (the item name being requested), etc. In
+Text::ANSITable, you can get the row position from C<< $self->{_draw}{y} >>.
+
 
 =head1 ATTRIBUTES
 
@@ -111,8 +201,22 @@ color themes, currently please refer to L<Text::ANSITable>.
 
 =head1 METHODS
 
+=head2 $cl->list_color_themes($detail) => ARRAY
+
 =head2 $cl->get_color_theme($name) => HASH
 
-=head2 $cl->list_color_themes($detail) => ARRAY
+=head2 $cl->get_theme_color($item_name, \%args) => STR
+
+Get an item's color from the current color theme.
+
+=head2 $cl->get_theme_color_as_ansi($item_name, \%args) => STR
+
+Get an item's color from the current color theme, converted to ANSI codes.
+
+=head2 $cl->themecol2ansi($col_code, \%args) => STR
+
+Convert a color from color theme (which can be a scalar containing color code,
+or a coderef that generates a color code) to ANSI escape code. C<< %args >> will
+be sent to coderef.
 
 =cut
