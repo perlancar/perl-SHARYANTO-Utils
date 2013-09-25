@@ -1,0 +1,164 @@
+package SHARYANTO::Role::TermAttrs;
+
+use 5.010;
+use Moo::Role;
+
+# VERSION
+
+my $dt_cache;
+sub detect_terminal {
+    my $self = shift;
+
+    if (!$dt_cache) {
+        require Term::Detect;
+        $dt_cache = Term::Detect::detect_terminal_cached("p") // {};
+        #use Data::Dump; dd $dt_cache;
+    }
+    $dt_cache;
+}
+
+my $termw_cache;
+my $termh_cache;
+sub _term_size {
+    my $self = shift;
+
+    if (defined $termw_cache) {
+        return ($termw_cache, $termh_cache);
+    }
+
+    ($termw_cache, $termh_cache) = (0, 0);
+    if (eval { require Term::Size; 1 }) {
+        ($termw_cache, $termh_cache) = Term::Size::chars();
+    }
+    ($termw_cache, $termh_cache);
+}
+
+has use_color => (
+    is      => 'rw',
+    default => sub {
+        my $self = shift;
+        $ENV{COLOR} // (-t STDOUT) //
+            $self->detect_terminal->{color_depth} > 0;
+    },
+);
+
+has color_depth => (
+    is      => 'rw',
+    default => sub {
+        my $self = shift;
+        return $ENV{COLOR_DEPTH} if defined $ENV{COLOR_DEPTH};
+        return $self->detect_terminal->{color_depth} // 16;
+    },
+);
+
+has use_box_chars => (
+    is      => 'rw',
+    default => sub {
+        return $ENV{BOX_CHARS} if defined $ENV{BOX_CHARS};
+        return 0 if $^O =~ /Win/; # Win32::Console::ANSI doesn't support this
+        1;
+    },
+);
+
+has use_utf8 => (
+    is      => 'rw',
+    default => sub {
+        my $self = shift;
+        return $ENV{UTF8} if defined $ENV{UTF8};
+        my $termuni = $self->detect_terminal->{unicode};
+        if (defined $termuni) {
+            return $termuni && (($ENV{LANG} // "") =~ /utf-?8/i ? 1:0);
+        }
+        0;
+    },
+);
+
+has term_width => (
+    is      => 'rw',
+    default => sub {
+        my $self = shift;
+        if ($ENV{COLUMNS}) {
+            return $ENV{COLUMNS};
+        }
+        my ($termw, undef) = $self->_term_size;
+        if (!$termw) {
+            # sane default, on windows printing to rightmost column causes
+            # cursor to move to the next line.
+            $termw = $^O =~ /Win/ ? 79 : 80;
+        }
+        $termw;
+    },
+);
+
+has term_height => (
+    is      => 'rw',
+    default => sub {
+        my $self = shift;
+        if ($ENV{ROWS}) {
+            return $ENV{ROWS};
+        }
+        my (undef, $termh) = $self->_term_size;
+        if (!$termh) {
+            # sane default
+            $termh = 25;
+        }
+        $termh;
+    },
+);
+
+1;
+#ABSTRACT: Role for terminal-related attributes
+
+=head1 DESCRIPTION
+
+This role gives several options to turn on/off terminal-oriented features like
+whether to use UTF8 characters, whether to use colors, and color depth. Defaults
+are set from environment variables or by detecting terminal
+software/capabilities.
+
+xo
+=head1 ATTRIBUTES
+
+=head2 use_utf8 => BOOL (default: from env, or detected from terminal)
+
+=head2 use_color => BOOL (default: from env, or detected from terminal)
+
+=head2 color_depth => INT (default: from env, or detected from terminal)
+
+=head2 term_width => INT (default: from env, or detected from terminal)
+
+=head2 term_height => INT (default: from env, or detected from terminal)
+
+
+=head1 METHODS
+
+=head2 detect_terminal => HASH
+
+
+=head1 ENVIRONMENT
+
+=over
+
+=item * UTF8 => BOOL
+
+=item * COLOR => BOOL
+
+Can be used to set C<use_color>.
+
+=item * COLOR_DEPTH => INT
+
+Can be used to set C<color_depth>.
+
+=item * BOX_CHARS => BOOL
+
+Can be used to set C<use_box_chars>.
+
+=item * COLUMNS => INT
+
+Can be used to set C<term_width>.
+
+=item * ROWS => INT
+
+Can be used to set C<term_height>.
+
+=cut
