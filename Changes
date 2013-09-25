@@ -1,5 +1,15 @@
 Revision history for SHARYANTO-Utils
 
+0.58    2013-09-25 (SHARYANTO)
+
+        - Role::BorderStyle: add get_border_char() (moved from Text::ANSITable).
+
+        - Role::ColorTheme: add some functions (some moved from
+          Text::ANSITable). Increase specification version to 1.1 because
+          multiple color codes should now returned as hash (more flexible)
+          instead of just 2-array element of [fg, bg].
+
+
 0.57    2013-09-25 (SHARYANTO)
 
         - Add Role::{BorderStyle,ColorTheme,TermAttrs}, extracted from

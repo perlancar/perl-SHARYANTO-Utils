@@ -57,6 +57,8 @@ sub get_color_theme {
     }
     $cts->{$ct} or die "Unknown color theme name '$ct'".
         ($pkg ? " in package $prefix\::$pkg" : "");
+    ($cts->{$ct}{v} // 1.0) == 1.1 or die "Color theme '$ct' is too old ".
+        "(v < 1.1)". ($pkg ? ", please upgrade $prefix\::$pkg" : "");
     $cts->{$ct};
 }
 
@@ -172,9 +174,9 @@ sub list_color_themes {
 This role is for class that wants to support color themes. For description about
 color themes, currently please refer to L<Text::ANSITable>.
 
-Color theme is a hash containing C<name> (str), C<summary> (str), C<no_color>
-(bool, should be set to 1 if this is a color theme without any colors), and
-C<colors> (hash, the colors for items).
+Color theme is a defhash containing C<v> (float, should be 1.1), C<name> (str),
+C<summary> (str), C<no_color> (bool, should be set to 1 if this is a color theme
+without any colors), and C<colors> (hash, the colors for items).
 
 A color should be a scalar containing a single color code which is 6-hexdigit
 RGB color (e.g. C<ffc0c0>), or a hashref containing multiple color codes, or a
