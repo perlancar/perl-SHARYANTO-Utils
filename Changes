@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.59    2013-09-28 (SHARYANTO)
+
+        - Role::TermAttrs: Switch from Term::Detect to Term::Detect::Software.
+
+
 0.58    2013-09-25 (SHARYANTO)
 
         - Role::BorderStyle: add get_border_char() (moved from Text::ANSITable).

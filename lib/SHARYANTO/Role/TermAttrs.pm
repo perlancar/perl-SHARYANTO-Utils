@@ -10,7 +10,7 @@ sub detect_terminal {
     my $self = shift;
 
     if (!$dt_cache) {
-        require Term::Detect;
+        require Term::Detect::Software;
         $dt_cache = Term::Detect::Software::detect_terminal_cached();
         #use Data::Dump; dd $dt_cache;
     }
@@ -54,6 +54,7 @@ has color_depth => (
 has use_box_chars => (
     is      => 'rw',
     default => sub {
+        my $self = shift;
         return $ENV{BOX_CHARS} if defined $ENV{BOX_CHARS};
         return $self->detect_terminal->{box_chars} // 0;
     },
