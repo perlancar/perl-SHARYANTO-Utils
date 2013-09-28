@@ -11,7 +11,7 @@ sub detect_terminal {
 
     if (!$dt_cache) {
         require Term::Detect;
-        $dt_cache = Term::Detect::detect_terminal_cached("p") // {};
+        $dt_cache = Term::Detect::Software::detect_terminal_cached();
         #use Data::Dump; dd $dt_cache;
     }
     $dt_cache;
@@ -55,8 +55,7 @@ has use_box_chars => (
     is      => 'rw',
     default => sub {
         return $ENV{BOX_CHARS} if defined $ENV{BOX_CHARS};
-        return 0 if $^O =~ /Win/; # Win32::Console::ANSI doesn't support this
-        1;
+        return $self->detect_terminal->{box_chars} // 0;
     },
 );
 
