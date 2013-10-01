@@ -33,11 +33,19 @@ sub _term_size {
     ($termw_cache, $termh_cache);
 }
 
+has interactive => (
+    is      => 'rw',
+    default => sub {
+        my $self = shift;
+        $ENV{INTERACTIVE} // (-t STDOUT);
+    },
+);
+
 has use_color => (
     is      => 'rw',
     default => sub {
         my $self = shift;
-        $ENV{COLOR} // (-t STDOUT) //
+        $ENV{COLOR} // $ENV{INTERACTIVE} //
             $self->detect_terminal->{color_depth} > 0;
     },
 );
@@ -116,7 +124,7 @@ whether to use UTF8 characters, whether to use colors, and color depth. Defaults
 are set from environment variables or by detecting terminal
 software/capabilities.
 
-xo
+
 =head1 ATTRIBUTES
 
 =head2 use_utf8 => BOOL (default: from env, or detected from terminal)
@@ -124,6 +132,8 @@ xo
 =head2 use_box_chars => BOOL (default: from env, or detected from OS)
 
 Default is 0 for Windows.
+
+=head2 interactive => BOOL (default: from env, or detected from terminal)
 
 =head2 use_color => BOOL (default: from env, or detected from terminal)
 
@@ -136,14 +146,21 @@ Default is 0 for Windows.
 
 =head1 METHODS
 
-=head2 detect_terminal => HASH
+=head2 detect_terminal() => HASH
 
+Call L<Term::Detect::Software>'s C<detect_terminal_cached>.
 
 =head1 ENVIRONMENT
 
 =over
 
 =item * UTF8 => BOOL
+
+Can be used to set C<use_utf8>.
+
+=item * INTERACTIVE => BOOL
+
+Can be used to set C<interactive>.
 
 =item * COLOR => BOOL
 
