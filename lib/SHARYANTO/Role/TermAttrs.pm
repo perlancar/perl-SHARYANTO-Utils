@@ -75,7 +75,8 @@ has use_utf8 => (
         return $ENV{UTF8} if defined $ENV{UTF8};
         my $termuni = $self->detect_terminal->{unicode};
         if (defined $termuni) {
-            return $termuni && (($ENV{LANG} // "") =~ /utf-?8/i ? 1:0);
+            return $termuni &&
+                (($ENV{LANG} || $ENV{LANGUAGE} || "") =~ /utf-?8/i ? 1:0);
         }
         0;
     },
@@ -128,6 +129,10 @@ software/capabilities.
 =head1 ATTRIBUTES
 
 =head2 use_utf8 => BOOL (default: from env, or detected from terminal)
+
+The default is retrieved from environment: if C<UTF8> is set, it is used.
+Otherwise, the default is on if terminal emulator software supports Unicode
+I<and> language (LANG/LANGUAGE) setting has /utf-?8/i in it.
 
 =head2 use_box_chars => BOOL (default: from env, or detected from OS)
 
