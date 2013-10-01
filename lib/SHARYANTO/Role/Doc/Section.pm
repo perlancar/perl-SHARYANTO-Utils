@@ -85,7 +85,7 @@ sub gen_doc {
 
     for my $s (@{ $self->doc_sections // [] }) {
         my $meth = "gen_doc_section_$s";
-        $log->tracef("=> $meth()");
+        $log->tracef("=> $meth(%s)", \%opts);
         $self->$meth(%opts);
     }
 
