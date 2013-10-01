@@ -94,8 +94,8 @@ has term_height => (
     is      => 'rw',
     default => sub {
         my $self = shift;
-        if ($ENV{ROWS}) {
-            return $ENV{ROWS};
+        if ($ENV{LINES}) {
+            return $ENV{LINES};
         }
         my (undef, $termh) = $self->_term_size;
         if (!$termh) {
@@ -161,7 +161,7 @@ Can be used to set C<use_box_chars>.
 
 Can be used to set C<term_width>.
 
-=item * ROWS => INT
+=item * LINES => INT
 
 Can be used to set C<term_height>.
 
