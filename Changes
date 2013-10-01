@@ -1,5 +1,16 @@
 Revision history for SHARYANTO-Utils
 
+0.60    2013-10-01 (SHARYANTO)
+
+        [BUG FIXES]
+
+        - Role::TermAttrs: observe LINES for term_height, not ROWS.
+
+        [ENHANCEMENTS]
+
+        - Role::TermAttrs: add attribute 'interactive' (observes INTERACTIVE).
+
+
 0.59    2013-09-28 (SHARYANTO)
 
         - Role::TermAttrs: Switch from Term::Detect to Term::Detect::Software.
