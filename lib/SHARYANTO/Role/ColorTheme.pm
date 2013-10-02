@@ -56,9 +56,9 @@ sub get_color_theme {
             "use list_color_themes() to list available themes";
     }
     $cts->{$ct} or die "Unknown color theme name '$ct'".
-        ($pkg ? " in package $prefix\::$pkg" : "");
+        ($pkg ? " in package $pkg" : "");
     ($cts->{$ct}{v} // 1.0) == 1.1 or die "Color theme '$ct' is too old ".
-        "(v < 1.1)". ($pkg ? ", please upgrade $prefix\::$pkg" : "");
+        "(v < 1.1)". ($pkg ? ", please upgrade $pkg" : "");
     $cts->{$ct};
 }
 
