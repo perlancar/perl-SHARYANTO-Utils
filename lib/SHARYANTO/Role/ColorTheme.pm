@@ -31,7 +31,7 @@ sub color_theme {
     if (!$ct->{no_color} && !$self->use_color) {
         $err = "color theme uses color but use_color is set to false";
     }
-   die "Can't select color theme$p2: $err" if $err;
+    die "Can't select color theme$p2: $err" if $err;
 
     $self->{color_theme} = $ct;
 }
