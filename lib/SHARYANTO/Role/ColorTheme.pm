@@ -14,6 +14,13 @@ with 'SHARYANTO::Role::TermAttrs';
 
 has color_theme_args  => (is => 'rw', default => sub { {} });
 has _all_color_themes => (is => 'rw');
+has color_theme_class_prefix => (
+    is => 'rw',
+    default => sub {
+        my $self = shift;
+        (ref($self) ? ref($self) : $self ) . '::ColorTheme';
+    },
+);
 
 sub color_theme {
     my $self = shift;
@@ -39,9 +46,7 @@ sub color_theme {
 sub get_color_theme {
     my ($self, $ct) = @_;
 
-    my $prefix = (ref($self) ? ref($self) : $self ) .
-        '::ColorTheme'; # XXX allow override
-
+    my $prefix = $self->color_theme_class_prefix;
     my $cts;
     my $pkg;
     if ($ct =~ s/(.+):://) {
@@ -134,9 +139,7 @@ sub list_color_themes {
 
     my ($self, $detail) = @_;
 
-    my $prefix = (ref($self) ? ref($self) : $self ) .
-        '::ColorTheme'; # XXX allow override
-
+    my $prefix = $self->color_theme_class_prefix;
     my $all_ct = $self->_all_color_themes;
 
     if (!$all_ct) {
