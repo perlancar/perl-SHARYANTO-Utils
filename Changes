@@ -171,13 +171,13 @@ Revision history for SHARYANTO-Utils
 
 0.38    2013-04-10 (SHARYANTO)
 
-        No functional changes. Bug fixes for format_metric().
+        - No functional changes. Bug fixes for format_metric().
 
 
 0.37    2013-04-10 (SHARYANTO)
 
-        No functional changes. Tweak internal/private option for
-        format_metric() for dux.
+        - No functional changes. Tweak internal/private option for
+          format_metric() for dux.
 
 
 0.36    2013-04-10 (SHARYANTO)
@@ -187,9 +187,9 @@ Revision history for SHARYANTO-Utils
 
 0.35    2013-02-15 (SHARYANTO)
 
-        No functional changes. Rewrite tests for l_abs_path() to more clearly
-        show the differences between it and abs_path(), pass on systems where
-        /tmp is symlinked.
+        - No functional changes. Rewrite tests for l_abs_path() to more clearly
+          show the differences between it and abs_path(), pass on systems where
+          /tmp is symlinked.
 
 
 0.34    2012-12-28 (SHARYANTO)
@@ -210,15 +210,15 @@ Revision history for SHARYANTO-Utils
 
 0.31    2012-12-25 (SHARYANTO)
 
-        Merry Christmas!
+        - Merry Christmas!
 
         - Add module: SHARYANTO::File::Flock.
 
 
 0.30    2012-10-02 (SHARYANTO)
 
-        No functional changes. Fix file_util.t due to failure report by Aaron
-        Holmgren.
+        - No functional changes. Fix file_util.t due to failure report by Aaron
+          Holmgren.
 
 
 0.29    2012-09-13 (SHARYANTO)
@@ -259,15 +259,13 @@ Revision history for SHARYANTO-Utils
 
 0.22    2012-06-14 (SHARYANTO)
 
-        No functional changes.
-
-        - Proc::Daemon::Prefork: 'pid_path' argument is not required unless we
-          daemonize.
+        - No functional changes. Proc::Daemon::Prefork: 'pid_path' argument is
+          not required unless we daemonize.
 
 
 0.21    2012-03-29 (SHARYANTO)
 
-        No functional changes. Add missing dependency to Moo [CT].
+        - No functional changes. Add missing dependency to Moo [CT].
 
 
 0.20    2012-03-29 (SHARYANTO)
@@ -286,8 +284,8 @@ Revision history for SHARYANTO-Utils
 
 0.18    2012-03-23 (SHARYANTO)
 
-        No functional changes. Split SHARYANTO::String::Util to its own dist to
-        avoid circular dependency problem with Perinci-Object.
+        - No functional changes. Split SHARYANTO::String::Util to its own dist
+          to avoid circular dependency problem with Perinci-Object.
 
 
 0.17    2012-03-21 (SHARYANTO)
@@ -312,8 +310,8 @@ Revision history for SHARYANTO-Utils
 
 0.15    2012-03-16 (SHARYANTO)
 
-        No functional changes. Add dependencies to Locale::Maketext{,::Lexicon}
-        for Role::I18N users.
+        - No functional changes. Add dependencies to
+          Locale::Maketext{,::Lexicon} for Role::I18N users.
 
 
 0.14    2012-03-15 (SHARYANTO)
@@ -326,44 +324,44 @@ Revision history for SHARYANTO-Utils
 
 0.13    2012-03-14 (SHARYANTO)
 
-        Add SHARYANTO::Doc::Base.
+        - Add SHARYANTO::Doc::Base.
 
 
 0.12    2012-03-06 (SHARYANTO)
 
-        Add SHARYANTO::Package::Util.
+        - Add SHARYANTO::Package::Util.
 
 
 0.11    2012-03-01 (SHARYANTO)
 
-        Array::Util: allow haystack to be a single string (assumed to be a
-        regex), document that haystack can also be a list of regexes. Updated
-        metadata to 1.1.
+        - Array::Util: allow haystack to be a single string (assumed to be a
+          regex), document that haystack can also be a list of regexes. Updated
+          metadata to 1.1.
 
 
 0.10    2011-09-29 (SHARYANTO)
 
-        Add SHARYANTO::HTTP::DetectUA::Simple.
+        - Add SHARYANTO::HTTP::DetectUA::Simple.
 
 
 0.09    2011-09-29 (SHARYANTO)
 
-        Proc::Daemon::Prefork: Add 'on_client_disconnect' option.
+        - Proc::Daemon::Prefork: Add 'on_client_disconnect' option.
 
 
 0.08    2011-09-22 (SHARYANTO)
 
-        No functional changes. Rebuild dist with newer Sub::Spec::To::Pod.
+        - No functional changes. Rebuild dist with newer Sub::Spec::To::Pod.
 
 
 0.07    2011-09-22 (SHARYANTO)
 
-        Array::Util: Add alias function match_regex_or_array, add sub specs.
+        - Array::Util: Add alias function match_regex_or_array, add sub specs.
 
 
 0.06    2011-09-22 (SHARYANTO)
 
-        Add SHARYANTO::Array::Util.
+        - Add SHARYANTO::Array::Util.
 
 
 0.05    2011-08-05 (SHARYANTO)
@@ -397,4 +395,4 @@ Revision history for SHARYANTO-Utils
 
 0.01    2011-06-17 (SHARYANTO)
 
-        First release.
+        - First release.
