@@ -203,6 +203,8 @@ Text::ANSITable, you can get the row position from C<< $self->{_draw}{y} >>.
 
 =head2 color_theme_args => HASH
 
+=head2 color_theme_class_prefix => STR (default: CLASS + "::ColorTheme")
+
 
 =head1 METHODS
 

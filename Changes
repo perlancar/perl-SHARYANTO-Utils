@@ -1,5 +1,11 @@
 Revision history for SHARYANTO-Utils
 
+0.61    2013-10-04 (SHARYANTO)
+
+        - Role::ColorTheme: add color_theme_class_prefix attribute to allow
+          overriding.
+
+
 0.60    2013-10-01 (SHARYANTO)
 
         [BUG FIXES]
