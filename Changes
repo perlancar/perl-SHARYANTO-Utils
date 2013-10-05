@@ -1,6 +1,6 @@
 Revision history for SHARYANTO-Utils
 
-0.62    2013-10-04 (SHARYANTO) (not yet released)
+0.62    2013-10-04 (SHARYANTO)
 
         - Split SHARYANTO::Role::* to SHARYANTO-Roles to make deps lighter.
 
