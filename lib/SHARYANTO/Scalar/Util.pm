@@ -78,6 +78,8 @@ like a real number (either an integer or a floating point).
 
 =head1 SEE ALSO
 
+L<SHARYANTO>
+
 L<Scalar::Util>
 
 L<Scalar::Util::Numeric>

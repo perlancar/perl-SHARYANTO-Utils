@@ -44,6 +44,8 @@ Contains regular expression to check valid log levels.
 
 =head1 SEE ALSO
 
+L<SHARYANTO>
+
 L<Log::Any>
 
 =cut

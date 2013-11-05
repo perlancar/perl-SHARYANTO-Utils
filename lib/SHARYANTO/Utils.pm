@@ -6,7 +6,6 @@ use 5.010001;
 
 1;
 # ABSTRACT: SHARYANTO's temporary namespace for various routines
-__END__
 
 =head1 FAQ
 
@@ -15,5 +14,11 @@ __END__
 This distribution is a heterogenous collection of modules that will eventually
 have their own proper distributions. See L<SHARYANTO> about this temporary
 namespace.
+
+
+=head1 SEE ALSO
+
+L<SHARYANTO>
+
 
 =cut

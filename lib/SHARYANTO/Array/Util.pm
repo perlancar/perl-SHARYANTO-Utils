@@ -79,6 +79,6 @@ $SPEC{match_regex_or_array}{summary} = 'Alias for match_array_or_regex';
 =head1 DESCRIPTION
 
 
-=head1 FUNCTIONS
+=head1 SEE ALSO
 
-None are exported by default, but they are exportable.
+L<SHARYANTO>

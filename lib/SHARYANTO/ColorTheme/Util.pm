@@ -71,6 +71,8 @@ from the default theme:
 
 =head1 SEE ALSO
 
+L<SHARYANTO>
+
 For more information about color themes, see L<SHARYANTO::Role::ColorTheme>.
 
 =cut

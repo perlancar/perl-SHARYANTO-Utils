@@ -706,5 +706,9 @@ Run before killing children and shutting down.
 
 =back
 
-=cut
 
+=head1 SEE ALSO
+
+L<SHARYANTO>
+
+=cut

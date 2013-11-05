@@ -51,4 +51,9 @@ Change something like 'help|h|?' or 'foo=s' or 'debug!' into, respectively,
 '--help, -h, -?' or '--foo=s' or '--(no)debug'. The output is suitable for
 including in help/usage text.
 
+
+=head1 SEE ALSO
+
+L<SHARYANTO>
+
 =cut

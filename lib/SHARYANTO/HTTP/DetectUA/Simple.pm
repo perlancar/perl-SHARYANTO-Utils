@@ -109,4 +109,9 @@ sub detect_http_ua_simple {
 1;
 # ABSTRACT: A very simple and generic browser detection library
 
+
+=head1 SEE ALSO
+
+L<SHARYANTO>
+
 =cut

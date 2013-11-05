@@ -72,10 +72,9 @@ sub extract_image_links {
 
 1;
 # ABSTRACT: Extract image links from HTML document
-__END__
 
-=head1 FUNCTIONS
+=head1 SEE ALSO
 
-None are exported by default, but they are exportable.
+L<SHARYANTO>
 
 =cut

@@ -39,4 +39,9 @@ with a couple of additional checks. It is a shortcut for:
  die if     exists $hash{$new_key};
  $hash{$new_key} = delete $hash{$old_key};
 
+
+=head1 SEE ALSO
+
+L<SHARYANTO>
+
 =cut

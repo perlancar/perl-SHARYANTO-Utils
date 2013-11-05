@@ -45,4 +45,9 @@ The algorithm is taken from perldoc -f system. Some sample output:
  died with signal 15, with coredump
  exited with value 3
 
+
+=head1 SEE ALSO
+
+L<SHARYANTO>
+
 =cut

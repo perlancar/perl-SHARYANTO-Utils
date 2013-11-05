@@ -89,6 +89,8 @@ The code is based on Neil Bower's L<Module::Path>.
 
 =head1 SEE ALSO
 
+L<SHARYANTO>
+
 L<Module::Path>
 
 =cut
