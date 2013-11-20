@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.64    2013-11-20 (SHARYANTO)
+
+        - Version::Util: add functions: version_{ne,between,in}.
+
+
 0.63    2013-11-20 (SHARYANTO)
 
         - Add module: Version::Util.
