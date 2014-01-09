@@ -27,7 +27,7 @@ sub setlocale {
     my ($cat, $locale) = @_;
     state %mem;
 
-    if ($locale =~ /\./) {
+    if (!$locale || $locale =~ /\./) {
         return POSIX::setlocale($cat, $locale);
     } elsif ($mem{$locale}) {
         return POSIX::setlocale($cat, $mem{$locale});
