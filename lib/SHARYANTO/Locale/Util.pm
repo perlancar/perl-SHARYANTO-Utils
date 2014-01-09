@@ -24,10 +24,12 @@ our %EXPORT_TAGS = (
 # VERSION
 
 sub setlocale {
-    my ($cat, $locale) = @_;
+    my $cat = shift;
     state %mem;
 
-    if (!$locale || $locale =~ /\./) {
+    return POSIX::setlocale($cat) if !@_;
+    my $locale = shift;
+    if ($locale =~ /\./) {
         return POSIX::setlocale($cat, $locale);
     } elsif ($mem{$locale}) {
         return POSIX::setlocale($cat, $mem{$locale});
