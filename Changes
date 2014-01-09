@@ -2,12 +2,16 @@ Revision history for SHARYANTO-Utils
 
 0.67    2014-01-09 (SHARYANTO)
 
+        - No functional changes.
+
         [BUG FIXES]
 
         - Didn't pass to POSIX::setlocale() correctly. Derp.
 
 
 0.66    2014-01-09 (SHARYANTO)
+
+        - No functional changes.
 
         [BUG FIXES]
 
