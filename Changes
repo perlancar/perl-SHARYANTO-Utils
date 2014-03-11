@@ -1,5 +1,13 @@
 Revision history for SHARYANTO-Utils
 
+0.68    2014-03-11 (SHARYANTO) (not yet released)
+
+        - No functional changes.
+
+        - Split SHARYANTO::Proc::Daemon::Prefork to its own dist to avoid
+          circular dependency problem.
+
+
 0.67    2014-01-09 (SHARYANTO)
 
         - No functional changes.
