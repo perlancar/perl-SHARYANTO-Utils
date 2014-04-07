@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.70    2014-04-07 (SHARYANTO)
+
+        [BUG FIXES]
+
+        - [Array::Util] Fix handling of literal string needle.
+
+
 0.69    2014-04-07 (SHARYANTO)
 
         - [Array::Util] Add function split_array().
