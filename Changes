@@ -1,6 +1,11 @@
 Revision history for SHARYANTO-Utils
 
-0.68    2014-03-11 (SHARYANTO) (not yet released)
+0.69    2014-04-07 (SHARYANTO)
+
+        - [Array::Util] Add function split_array().
+
+
+0.68    2014-03-11 (SHARYANTO)
 
         - No functional changes.
 
