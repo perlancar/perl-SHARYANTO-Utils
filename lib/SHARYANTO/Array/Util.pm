@@ -24,6 +24,15 @@ $SPEC{match_array_or_regex} = {
 This routine can be used to match an item against a regex or a list of
 strings/regexes, e.g. when matching against an ACL.
 
+Since the smartmatch (`~~`) operator can already match against a list of strings
+or regexes, this function is currently basically equivalent to:
+
+    if (reg($haystack) eq 'ARRAY') {
+        return $needle ~~ @$haystack;
+    } else {
+        return $needle =~ /$haystack/;
+    }
+
 _
     examples => [
         {args=>{needle=>"abc", haystack=>["abc", "abd"]}, result=>1},
