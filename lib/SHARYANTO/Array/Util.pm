@@ -146,7 +146,7 @@ sub split_array {
 
 =head1 FUNCTIONS
 
-=head2 split_array($str_or_re, \@array[, $num]) => LIST
+=head2 split_array($str_or_re, \@array[, $limit]) => LIST
 
 Like the C<split()> builtin Perl function, but applies on an array instead of a
 scalar. It loosely follows the C<split()> semantic, with some exceptions.
