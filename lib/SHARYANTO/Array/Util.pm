@@ -152,7 +152,7 @@ Like the C<split()> builtin Perl function, but applies on an array instead of a
 scalar. It loosely follows the C<split()> semantic, with some exceptions.
 
 
-=head2 TODO
+=head1 TODO
 
 =over
 
