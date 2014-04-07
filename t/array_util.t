@@ -32,7 +32,13 @@ ok(!match_array_or_regex("qux", qr/foo?/), "alias 2");
 
 subtest "split_array" => sub {
     is_deeply([split_array("x", [qw/a b x c d x e/])],
-              [[qw/a b/], [qw/c d/], [qw/e/]], "basic");
+              [[qw/a b/], [qw/c d/], [qw/e/]], "str 1");
+    is_deeply([split_array("x", [qw/a b 1x c d x1 e/])],
+              [[qw/a b 1x c d x1 e/]], "str 2");
+
+    is_deeply([split_array(qr/x/, [qw/a b 1x c d x1 e/])],
+              [[qw/a b/], [qw/c d/], [qw/e/]], "re 1");
+
     is_deeply([split_array(qr/x/, [qw/a b x c d x e/], 2)],
               [[qw/a b/], [qw/c d x e/]], "limit");
     is_deeply([split_array(qr/(x)/, [qw/a b x c d x e/])],

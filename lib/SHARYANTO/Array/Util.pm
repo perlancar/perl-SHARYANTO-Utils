@@ -88,7 +88,7 @@ sub split_array {
     my ($pat, $ary, $limit) = @_;
 
     die "BUG: Second argument must be an array" unless ref($ary) eq 'ARRAY';
-    $pat = qr/$pat/ unless ref($pat) eq 'Regexp';
+    $pat = qr/\A\Q$pat\E\z/ unless ref($pat) eq 'Regexp';
 
     my @res;
     my $num_elems = 0;
