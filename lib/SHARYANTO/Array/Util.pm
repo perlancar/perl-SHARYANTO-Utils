@@ -8,7 +8,11 @@ use Data::Clone;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(match_array_or_regex match_regex_or_array);
+our @EXPORT_OK = qw(
+                       match_array_or_regex
+                       match_regex_or_array
+                       split_array
+               );
 
 # VERSION
 
@@ -78,13 +82,85 @@ sub match_array_or_regex {
 $SPEC{match_regex_or_array} = clone $SPEC{match_array_or_regex};
 $SPEC{match_regex_or_array}{summary} = 'Alias for match_array_or_regex';
 
+sub split_array {
+    no strict 'refs';
+
+    my ($pat, $ary, $limit) = @_;
+
+    die "BUG: Second argument must be an array" unless ref($ary) eq 'ARRAY';
+    $pat = qr/$pat/ unless ref($pat) eq 'Regexp';
+
+    my @res;
+    my $num_elems = 0;
+    my $i = 0;
+  ELEM:
+    while ($i < @$ary) {
+        push @res, [];
+      COLLECT:
+        while (1) {
+            if ($ary->[$i] =~ $pat) {
+                push @res, [map { ${"$_"} } 1..@+-1] if @+ > 1;
+                last COLLECT;
+            }
+            push @{ $res[-1] }, $ary->[$i];
+            last ELEM unless ++$i < @$ary;
+        }
+        $num_elems++;
+      LIMIT:
+        if (defined($limit) && $limit > 0 && $num_elems >= $limit) {
+            push @{ $res[-1] }, $ary->[$_] for $i..(@$ary-1);
+            last ELEM;
+        }
+        $i++;
+    }
+
+    return @res;
+}
+
 1;
 # ABSTRACT: Array-related utilities
 
 =head1 SYNOPSIS
 
+ use SHARYANTO::Array::Util qw(match_array_or_regex split_array);
+
+ match_array_or_regex('bar',  ['foo', 'bar', qr/[xyz]/]); # true, matches string
+ match_array_or_regex('baz',  ['foo', 'bar', qr/[xyz]/]); # true, matches regex
+ match_array_or_regex('oops', ['foo', 'bar', qr/[xyz]/]); # false
+
+ my @res = split_array('--', [qw/--opt1 --opt2 -- foo bar -- --val/]);
+ # -> ([qw/--opt1 --opt2/],  [qw/foo bar/],  [qw/--val/])
+
+ my @res = split_array(qr/--/, [qw/--opt1 --opt2 -- foo bar -- --val/], 2);
+ # -> ([qw/--opt1 --opt2/],  [qw/foo bar -- --val/])
+
+ my @res = split_array(qr/(--)/, [qw/--opt1 --opt2 -- foo bar -- --val/], 2);
+ # -> ([qw/--opt1 --opt2/],  [qw/--/],  [qw/foo bar -- --val/])
+
+ my @res = split_array(qr/(-)(-)/, [qw/--opt1 --opt2 -- foo bar -- --val/], 2);
+ # -> ([qw/--opt1 --opt2/],  [qw/- -/],  [qw/foo bar -- --val/])
+
 
 =head1 DESCRIPTION
+
+
+=head1 FUNCTIONS
+
+=head2 split_array($str_or_re, \@array[, $num]) => LIST
+
+Like the C<split()> builtin Perl function, but applies on an array instead of a
+scalar. It loosely follows the C<split()> semantic, with some exceptions.
+
+
+=head2 TODO
+
+=over
+
+=item * [REJECT] split_array: By default operate on C<@_>?
+
+Like C<split>'s behavior of by default operating on C<$_>.
+
+=back
 
 
 =head1 SEE ALSO

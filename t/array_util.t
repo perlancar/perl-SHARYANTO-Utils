@@ -6,7 +6,11 @@ use warnings;
 
 use Test::More 0.96;
 
-use SHARYANTO::Array::Util qw(match_array_or_regex match_regex_or_array);
+use SHARYANTO::Array::Util qw(
+                                 match_array_or_regex
+                                 match_regex_or_array
+                                 split_array
+                         );
 
 ok( match_array_or_regex("foo", [qw/foo bar baz/]), "match array 1");
 ok(!match_array_or_regex("qux", [qw/foo bar baz/]), "match array 2");
@@ -25,6 +29,17 @@ ok($eval_err, "match invalid -> dies");
 
 ok( match_regex_or_array("foo", qr/foo?/), "alias 1");
 ok(!match_array_or_regex("qux", qr/foo?/), "alias 2");
+
+subtest "split_array" => sub {
+    is_deeply([split_array("x", [qw/a b x c d x e/])],
+              [[qw/a b/], [qw/c d/], [qw/e/]], "basic");
+    is_deeply([split_array(qr/x/, [qw/a b x c d x e/], 2)],
+              [[qw/a b/], [qw/c d x e/]], "limit");
+    is_deeply([split_array(qr/(x)/, [qw/a b x c d x e/])],
+              [[qw/a b/], [qw/x/], [qw/c d/], [qw/x/], [qw/e/]], "capture 1");
+    is_deeply([split_array(qr/(x)(x)/, [qw/a b xx c xx e/])],
+              [[qw/a b/], [qw/x x/], [qw/c/], [qw/x x/], [qw/e/]], "capture 2");
+};
 
 DONE_TESTING:
 done_testing();
