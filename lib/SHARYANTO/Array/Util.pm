@@ -43,8 +43,7 @@ _
             # to skip validating this schema
 
             schema => ["any*" => {
-                # turned off temporarily 2012-12-25, Data::Sah is currently broken
-                #of => [$_str_or_re, ["array*"=>{of=>$_str_or_re}]],
+                of => [$_str_or_re, ["array*"=>{of=>$_str_or_re}]],
             }],
             pos => 1,
             req => 1,
