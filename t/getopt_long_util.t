@@ -5,16 +5,16 @@ use strict;
 use warnings;
 
 use SHARYANTO::Getopt::Long::Util qw(
-                                        gospec2human
+                                        humanize_getopt_long_opt_spec
                          );
 use Test::More 0.98;
 
-subtest gospec2human => sub {
-    is(gospec2human('help|h|?'), '--help, -h, -?');
-    is(gospec2human('foo=s'), '--foo=s');
-    is(gospec2human('--foo=s'), '--foo=s');
-    is(gospec2human('foo|bar=s'), '--foo=s, --bar=s');
+subtest humanize_getopt_long_opt_spec => sub {
+    is(humanize_getopt_long_opt_spec('help|h|?'), '--help, -h, -?');
+    is(humanize_getopt_long_opt_spec('foo=s'), '--foo=s');
+    is(humanize_getopt_long_opt_spec('--foo=s'), '--foo=s');
+    is(humanize_getopt_long_opt_spec('foo|bar=s'), '--foo=s, --bar=s');
 };
 
 DONE_TESTING:
-done_testing();
+done_testing;

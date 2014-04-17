@@ -8,24 +8,32 @@ use warnings;
 
 require Exporter;
 our @ISA       = qw(Exporter);
-our @EXPORT_OK = qw(gospec2human);
+our @EXPORT_OK = qw(
+                       humanize_getopt_long_opt_spec
+                       gospec2human
+               );
 
-sub gospec2human {
-    my $go = shift;
+# old name, kept for backward-compat
+sub gospec2human { goto &humanize_getopt_long_opt_spec }
+
+sub humanize_getopt_long_opt_spec {
+    my $optspec = shift;
+
+    $optspec =~ s/\A--?//;
 
     my $type = 'flag';
-    if ($go =~ s/!$//) {
+    if ($optspec =~ s/!$//) {
         $type = 'bool';
-    } elsif ($go =~ s/(=\w)$//) {
+    } elsif ($optspec =~ s/(=\w)$//) {
         $type = $1;
-    } elsif ($go =~ s/\+$//) {
+    } elsif ($optspec =~ s/\+$//) {
         # also a flag, increment by one like --more --more --more
-    } elsif ($go !~ /[A-Za-z0-9?]\z/) {
-        die "Sorry, can't parse '$go' yet (probably invalid?)";
+    } elsif ($optspec !~ /[A-Za-z0-9?]\z/) {
+        die "Sorry, can't parse opt spec '$optspec' yet (probably invalid?)";
     }
 
     my $res = "";
-    for (split /\|/, $go) {
+    for (split /\|/, $optspec) {
         $res .= ", " if length($res);
         s/^--?//;
         if ($type eq 'bool') {
@@ -45,15 +53,15 @@ sub gospec2human {
 
 =head1 FUNCTIONS
 
-=head2 gospec2human($gospec) => STR
+=head2 humanize_getopt_long_opt_spec($gospec) => STR
 
-Change something like 'help|h|?' or 'foo=s' or 'debug!' into, respectively,
-'--help, -h, -?' or '--foo=s' or '--(no)debug'. The output is suitable for
-including in help/usage text.
+Convert Getopt::Long option specification like C<help|h|?> or <--foo=s> or
+C<debug!> into, respectively, C<--help, -h, -?> or C<--foo=s> or C<--(no)debug>.
+The output is suitable for including in help/usage text.
 
 
 =head1 SEE ALSO
 
-L<SHARYANTO>
+L<Getopt::Long>
 
 =cut
