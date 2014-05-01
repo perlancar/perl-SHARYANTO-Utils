@@ -1,5 +1,25 @@
 Revision history for SHARYANTO-Utils
 
+0.71    2014-05-01 (SHARYANTO)
+
+        [REMOVED FEATURES]
+
+        - Remove module SHARYANTO::Scalar::Util (unused, and looks_like_number()
+          probably won't expose the constants anymore).
+
+        - Remove module SHARYANTO::Version::Util (extracted to its own dist and
+          renamed to Version::Util).
+
+        - Remove module SHARYANTO::Getopt::Long::Util (extracted to its own dist
+          and renamed to Getopt::Long::Util).
+
+        - Remove module SHARYANTO::ModuleOrPrefix::Path (extracted to its own
+          dist and renamed to ModuleOrPrefix::Path).
+
+        - Remove module SHARYANTO::Proc::ChildError (extracted to its own dist
+          and renamed to Proc::ChildError).
+
+
 0.70    2014-04-07 (SHARYANTO)
 
         [BUG FIXES]
