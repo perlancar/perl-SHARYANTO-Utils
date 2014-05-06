@@ -24,7 +24,10 @@ sub import {
     my $class = shift;
     my $caller = caller;
 
-    ${"$caller\::TIMER"} = $TIMER;
+    # this does not work, caller's $TIMER is not tied
+    #${"$caller\::TIMER"} = $TIMER;
+    tie ${"$caller\::TIMER"}, 'Time::Stopwatch';
+
     *{"$caller\::timer"} = \&timer;
 }
 
