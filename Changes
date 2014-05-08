@@ -1,5 +1,12 @@
 Revision history for SHARYANTO-Utils
 
+0.72    2014-05-08 (SHARYANTO)
+
+        - Add module: SHARYANTO::Marpa::Simple.
+
+        - Add module: SHARYANTO::Timer::Simple.
+
+
 0.71    2014-05-01 (SHARYANTO)
 
         [REMOVED FEATURES]

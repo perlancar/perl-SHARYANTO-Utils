@@ -9,7 +9,9 @@ our @EXPORT_OK = qw(gen_parser);
 # VERSION
 # DATE
 
-our %SPEC = {
+our %SPEC;
+
+$SPEC{gen_parser} = {
     v => 1.1,
     summary => 'Generate Marpa-based parser',
     args => {
