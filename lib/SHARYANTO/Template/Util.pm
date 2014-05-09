@@ -6,7 +6,7 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(process_tt_recursive);
 
 use File::Find;
-use File::Slurp;
+use File::Slurp::Tiny 'read_file', 'write_file';
 use Template::Tiny;
 
 # VERSION
