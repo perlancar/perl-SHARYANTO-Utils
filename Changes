@@ -1,5 +1,18 @@
 Revision history for SHARYANTO-Utils
 
+0.73    2014-05-10 (SHARYANTO)
+
+        [REMOVED FEATURES]
+
+        - Remove SHARYANTO::Marpa::Simple (extracted to its own dist and renamed
+          to MarpaX::Simple).
+
+        [INTERNAL]
+
+        - Replace usage of File::Slurp with File::Slurp::Tiny [RT#95478], this
+          will be one of many such commits.
+
+
 0.72    2014-05-08 (SHARYANTO)
 
         - Add module: SHARYANTO::Marpa::Simple.
