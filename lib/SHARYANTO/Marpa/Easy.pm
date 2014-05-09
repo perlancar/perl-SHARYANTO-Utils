@@ -1,4 +1,4 @@
-package SHARYANTO::Marpa::Simple;
+package SHARYANTO::Marpa::Easy;
 
 use Marpa::R2;
 use UUID::Random;
@@ -67,7 +67,7 @@ sub gen_parser {
 
 =head1 SYNOPSIS
 
- use SHARYANTO::Marpa::Simple qw(gen_parser);
+ use SHARYANTO::Marpa::Easy qw(gen_parser);
 
  my $parser = gen_parser(
      grammar => <<'EOG',
@@ -91,7 +91,7 @@ which is a shortcut for roughly this:
  no strict 'refs';
  use Marpa::R2;
  my $grammar = Marpa::R2::Scanless::G->new({source => \$args{grammar}});
- my $pkg = "SHARYANTO::Marpa::Simple::gen" . some_random_value();
+ my $pkg = "SHARYANTO::Marpa::Easy::gen" . some_random_value();
  my $actions = $args{actions};
  for (keys %$actions) {
      ${"$pkg\::$_"} = $actions->{$_};
@@ -103,3 +103,15 @@ which is a shortcut for roughly this:
          semantics_package => $pkg,
      });
  };
+
+
+=head1 DESCRIPTION
+
+This module tries to simplify the incantation of producing a parser using
+L<Marpa::R2> (the scanless interface) by reducing the process to a single
+function call: C<gen_parser>.
+
+
+=head1 SEE ALSO
+
+L<Marpa::R2>
