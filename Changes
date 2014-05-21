@@ -1,5 +1,10 @@
 Revision history for SHARYANTO-Utils
 
+0.74    2014-05-21 (SHARYANTO)
+
+        - Add module: SHARYANTO::List::Util.
+
+
 0.73    2014-05-10 (SHARYANTO)
 
         [REMOVED FEATURES]
