@@ -1,5 +1,20 @@
 Revision history for SHARYANTO-Utils
 
+0.75    2014-06-26 (SHARYANTO)
+
+        [INCOMPATIBLE CHANGES]
+
+        - Move functions find_missing_{nums,strs}_in_seq() from
+          SHARYANTO::Number::Util to SHARYANTO::List::Util.
+
+        - Rename function in SHARYANTO::List::Util: uniq -> uniq_adj.
+
+
+        [NEW FEATURES]
+
+        - Add functions in SHARYANTO::List::Util: uniq_ci, uniq_adj_ci.
+
+
 0.74    2014-05-21 (SHARYANTO)
 
         - Add module: SHARYANTO::List::Util.
