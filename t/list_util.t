@@ -7,13 +7,13 @@ use warnings;
 use Test::More 0.98;
 
 use SHARYANTO::List::Util qw(
-                                uniq
+                                uniq_adj
                                 find_missing_nums_in_seq
                                 find_missing_strs_in_seq
                         );
 
-subtest "uniq" => sub {
-    is_deeply([uniq(1, 2, 4, 4, 4, 2, 4)], [1, 2, 4, 2, 4]);
+subtest "uniq_adj" => sub {
+    is_deeply([uniq_adj(1, 2, 4, 4, 4, 2, 4)], [1, 2, 4, 2, 4]);
 };
 
 subtest find_missing_nums_in_seq => sub {

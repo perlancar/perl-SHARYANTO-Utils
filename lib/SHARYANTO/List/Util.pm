@@ -7,7 +7,7 @@ use warnings;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
-                       uniq
+                       uniq_adj
                        find_missing_nums_in_seq
                        find_missing_strs_in_seq
                );
@@ -15,7 +15,7 @@ our @EXPORT_OK = qw(
 # VERSION
 # DATE
 
-sub uniq {
+sub uniq_adj {
     my @res;
 
     return () unless @_;
@@ -66,7 +66,7 @@ sub find_missing_strs_in_seq {
 
 Not exported by default but exportable.
 
-=head2 uniq(@list) => LIST
+=head2 uniq_adj(@list) => LIST
 
 Remove I<adjacent> duplicates from list, i.e. behave more like Unix utility's
 B<uniq> instead of L<List::MoreUtils>'s C<uniq> function, e.g.
