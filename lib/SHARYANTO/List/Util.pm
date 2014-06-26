@@ -8,6 +8,8 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
                        uniq_adj
+                       uniq_adj_ci
+                       uniq_ci
                        find_missing_nums_in_seq
                        find_missing_strs_in_seq
                );
@@ -27,6 +29,32 @@ sub uniq_adj {
         next if defined($_) && defined($last) && $_ eq $last;
         push @res, $_;
         $last = $_;
+    }
+    @res;
+}
+
+sub uniq_adj_ci {
+    my @res;
+
+    return () unless @_;
+    my $last = shift;
+    push @res, $last;
+    for (@_) {
+        next if !defined($_) && !defined($last);
+        # XXX $_ becomes stringified
+        next if defined($_) && defined($last) && lc($_) eq lc($last);
+        push @res, $_;
+        $last = $_;
+    }
+    @res;
+}
+
+sub uniq_ci {
+    my @res;
+
+    my %mem;
+    for (@_) {
+        push @res, $_ unless $mem{lc $_}++;
     }
     @res;
 }
@@ -72,6 +100,14 @@ Remove I<adjacent> duplicates from list, i.e. behave more like Unix utility's
 B<uniq> instead of L<List::MoreUtils>'s C<uniq> function, e.g.
 
  my @res = uniq(1, 4, 4, 3, 1, 1, 2); # 1, 4, 3, 1, 2
+
+=head2 uniq_adj_ci(@list) => LIST
+
+Like C<uniq_adj> except case-insensitive.
+
+=head2 uniq_ci(@list) => LIST
+
+Like C<List::MoreUtils>' C<uniq> except case-insensitive.
 
 =head2 find_missing_nums_in_seq(LIST) => LIST
 
