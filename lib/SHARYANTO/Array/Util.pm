@@ -4,7 +4,8 @@ use 5.010;
 use strict;
 use warnings;
 use experimental 'smartmatch';
-use Data::Clone;
+
+use Perinci::Sub::Util qw(gen_modified_sub);
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -14,6 +15,7 @@ our @EXPORT_OK = qw(
                        split_array
                );
 
+# DATE
 # VERSION
 
 our %SPEC;
@@ -78,9 +80,11 @@ sub match_array_or_regex {
     }
 }
 
-*match_regex_or_array = \&match_array_or_regex;
-$SPEC{match_regex_or_array} = clone $SPEC{match_array_or_regex};
-$SPEC{match_regex_or_array}{summary} = 'Alias for match_array_or_regex';
+gen_modified_sub(
+    output_name => 'match_regex_or_array',
+    base_name   => 'match_array_or_regex',
+    summary     => 'Alias for match_array_or_regex',
+);
 
 sub split_array {
     no strict 'refs';
