@@ -1,15 +1,15 @@
 package SHARYANTO::Hash::Util;
 
+# DATE
+# VERSION
+
 use 5.010;
 use strict;
 use warnings;
-use Data::Clone;
 
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(rename_key);
-
-# VERSION
 
 sub rename_key {
     my ($h, $okey, $nkey) = @_;
