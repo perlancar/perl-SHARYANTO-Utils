@@ -158,14 +158,6 @@ scalar. It loosely follows the C<split()> semantic, with some exceptions.
 
 =head1 TODO
 
-=over
-
-=item * [REJECT] split_array: By default operate on C<@_>?
-
-Like C<split>'s behavior of by default operating on C<$_>.
-
-=back
-
 
 =head1 SEE ALSO
 
