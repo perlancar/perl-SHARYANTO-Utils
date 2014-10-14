@@ -33,7 +33,7 @@ strings/regexes, e.g. when matching against an ACL.
 Since the smartmatch (`~~`) operator can already match against a list of strings
 or regexes, this function is currently basically equivalent to:
 
-    if (reg($haystack) eq 'ARRAY') {
+    if (ref($haystack) eq 'ARRAY') {
         return $needle ~~ @$haystack;
     } else {
         return $needle =~ /$haystack/;
