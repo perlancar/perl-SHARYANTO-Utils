@@ -165,7 +165,8 @@ scalar. It loosely follows the C<split()> semantic, with some exceptions.
 =head2 replace_array_content($aryref, @elems) => $aryref
 
 Replace elements in <$aryref> with @elems. Return C<$aryref>. Do not create a
-new arrayref object.
+new arrayref object (i.e. it is different from: C<< $aryref = ["new", "content"]
+>>).
 
 Do not use this function. In Perl you can just use: C<< splice(@$aryref, 0,
 length(@$aryref), @elems) >> or even easier: C<< @$aryref = @elems >>. I put the
