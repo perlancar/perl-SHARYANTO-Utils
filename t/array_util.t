@@ -10,6 +10,7 @@ use SHARYANTO::Array::Util qw(
                                  match_array_or_regex
                                  match_regex_or_array
                                  split_array
+                                 replace_array_content
                          );
 
 ok( match_array_or_regex("foo", [qw/foo bar baz/]), "match array 1");
@@ -45,6 +46,14 @@ subtest "split_array" => sub {
               [[qw/a b/], [qw/x/], [qw/c d/], [qw/x/], [qw/e/]], "capture 1");
     is_deeply([split_array(qr/(x)(x)/, [qw/a b xx c xx e/])],
               [[qw/a b/], [qw/x x/], [qw/c/], [qw/x x/], [qw/e/]], "capture 2");
+};
+
+subtest "replace_array_content" => sub {
+    my $a = [1,2,3];
+    my $refa = "$a";
+    replace_array_content($a, 4, 5, 6);
+    is_deeply($a, [4,5,6], "content changed");
+    is("$a", $refa, "refaddr doesn't change");
 };
 
 DONE_TESTING:

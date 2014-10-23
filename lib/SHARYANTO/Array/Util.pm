@@ -1,5 +1,8 @@
 package SHARYANTO::Array::Util;
 
+# DATE
+# VERSION
+
 use 5.010;
 use strict;
 use warnings;
@@ -13,10 +16,8 @@ our @EXPORT_OK = qw(
                        match_array_or_regex
                        match_regex_or_array
                        split_array
+                       replace_array_content
                );
-
-# DATE
-# VERSION
 
 our %SPEC;
 
@@ -121,6 +122,12 @@ sub split_array {
     return @res;
 }
 
+sub replace_array_content {
+    my $aryref = shift;
+    @$aryref = @_;
+    $aryref;
+}
+
 1;
 # ABSTRACT: Array-related utilities
 
@@ -154,6 +161,15 @@ sub split_array {
 
 Like the C<split()> builtin Perl function, but applies on an array instead of a
 scalar. It loosely follows the C<split()> semantic, with some exceptions.
+
+=head2 replace_array_content($aryref, @elems) => $aryref
+
+Replace elements in <$aryref> with @elems. Return C<$aryref>. Do not create a
+new arrayref object.
+
+Do not use this function. In Perl you can just use: C<< splice(@$aryref, 0,
+length(@$aryref), @elems) >> or even easier: C<< @$aryref = @elems >>. I put the
+function here for reminder.
 
 
 =head1 TODO
