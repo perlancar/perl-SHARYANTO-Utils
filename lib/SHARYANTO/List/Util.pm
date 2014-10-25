@@ -1,5 +1,8 @@
 package SHARYANTO::List::Util;
 
+# DATE
+# VERSION
+
 use 5.010;
 use strict;
 use warnings;
@@ -12,10 +15,13 @@ our @EXPORT_OK = qw(
                        uniq_ci
                        find_missing_nums_in_seq
                        find_missing_strs_in_seq
+                       max_in_range maxstr_in_range
+                       min_in_range minstr_in_range
                );
 
-# VERSION
-# DATE
+# TODO: minmaxstr (not included in List::MoreUtils)
+# TODO: minmax_in_range. minmaxstr_in_range
+# TODO: *_in_xrange
 
 sub uniq_adj {
     my @res;
@@ -87,6 +93,62 @@ sub find_missing_strs_in_seq {
     wantarray ? @res : \@res;
 }
 
+sub max_in_range {
+    my $lower = shift;
+    my $upper = shift;
+
+    my $ans;
+    for (@_) {
+        $ans = $_ if defined($_) &&
+            (!defined($ans)   || $ans < $_) &&
+            (!defined($lower) || $lower <= $_) &&
+            (!defined($upper) || $upper >= $_);
+    }
+    $ans;
+}
+
+sub maxstr_in_range {
+    my $lower = shift;
+    my $upper = shift;
+
+    my $ans;
+    for (@_) {
+        $ans = $_ if defined($_) &&
+            (!defined($ans)   || $ans lt $_) &&
+            (!defined($lower) || $lower le $_) &&
+            (!defined($upper) || $upper ge $_);
+    }
+    $ans;
+}
+
+sub min_in_range {
+    my $lower = shift;
+    my $upper = shift;
+
+    my $ans;
+    for (@_) {
+        $ans = $_ if defined($_) &&
+            (!defined($ans)   || $ans > $_) &&
+            (!defined($lower) || $lower <= $_) &&
+            (!defined($upper) || $upper >= $_);
+    }
+    $ans;
+}
+
+sub minstr_in_range {
+    my $lower = shift;
+    my $upper = shift;
+
+    my $ans;
+    for (@_) {
+        $ans = $_ if defined($_) &&
+            (!defined($ans)   || $ans gt $_) &&
+            (!defined($lower) || $lower le $_) &&
+            (!defined($upper) || $upper ge $_);
+    }
+    $ans;
+}
+
 1;
 # ABSTRACT: List utilities
 
@@ -121,6 +183,26 @@ Like C<find_missing_nums_in_seq>, but for strings/letters "a".."z".
 
  find_missing_strs_in_seq("a", "e", "b"); # ("c", "d")
  find_missing_strs_in_seq("aa".."zu", "zz"); # ("zv", "zw", "zx", "zy")
+
+=head2 min_in_range($lower, $upper, @list) => $num
+
+Find lowest number C<$num> in C<@list> which still satisfies C<< $lower <= $num
+<= $upper >>. C<$lower> and/or C<$upper> can be undef to express no limit.
+
+=head2 minstr_in_range($lower, $upper, @list) => $str
+
+Find lowest string C<$str> in C<@list> which still satisfies C<< $lower le $x
+le $upper >>. C<$lower> and/or C<$upper> can be undef to express no limit.
+
+=head2 max_in_range($lower, $upper, @list) => $num
+
+Find highest number C<$num> in C<@list> which still satisfies C<< $lower <= $num
+<= $upper >>. C<$lower> and/or C<$upper> can be undef to express no limit.
+
+=head2 maxstr_in_range($lower, $upper, @list) => $str
+
+Find highest string C<$str> in C<@list> which still satisfies C<< $lower le $x
+le $upper >>. C<$lower> and/or C<$upper> can be undef to express no limit.
 
 
 =head1 SEE ALSO
