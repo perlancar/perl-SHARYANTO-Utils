@@ -21,6 +21,7 @@ our @EXPORT_OK = qw(
 # TODO: minmaxstr (not included in List::MoreUtils)
 # TODO: minmax_in_range. minmaxstr_in_range
 # TODO: *_in_xrange
+# TODO? pick_n_distinct
 
 sub uniq_adj {
     my @res;
@@ -222,9 +223,20 @@ Randomly pick an item from list. It is actually simply done as:
 
  $_[@_ * rand]
 
+Example:
+
+ pick(1, 2, 3); # => 2
+ pick(1, 2, 3); # => 1
+
 =head2 pick_n($n, @list) => @picked
 
-Randomly pick C<n> (distinct) items from list.
+Randomly pick C<n> different items from list. Note that there might still be
+duplicate values in the result if the original list contains duplicates.
+
+ pick_n(3, 1,2,3,4,5); # => (3,2,5)
+ pick_n(2, 1,2,3,4,5); # => (3,1)
+ pick_n(2, 1,1,1,1);   # => (1,1)
+ pick_n(4, 1,2,3);     # => (3,1,2)
 
 
 =head1 SEE ALSO
