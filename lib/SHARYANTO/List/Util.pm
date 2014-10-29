@@ -10,13 +10,12 @@ use warnings;
 require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
-                       uniq_adj
-                       uniq_adj_ci
-                       uniq_ci
+                       uniq_adj uniq_adj_ci uniq_ci
                        find_missing_nums_in_seq
                        find_missing_strs_in_seq
                        max_in_range maxstr_in_range
                        min_in_range minstr_in_range
+                       pick pick_n
                );
 
 # TODO: minmaxstr (not included in List::MoreUtils)
@@ -149,6 +148,19 @@ sub minstr_in_range {
     $ans;
 }
 
+sub pick {
+    $_[@_ * rand];
+}
+
+sub pick_n {
+    my $n = shift;
+    my @res;
+    while (@_ && @res < $n) {
+        push @res, splice(@_, @_*rand(), 1);
+    }
+    @res;
+}
+
 1;
 # ABSTRACT: List utilities
 
@@ -203,6 +215,16 @@ Find highest number C<$num> in C<@list> which still satisfies C<< $lower <= $num
 
 Find highest string C<$str> in C<@list> which still satisfies C<< $lower le $x
 le $upper >>. C<$lower> and/or C<$upper> can be undef to express no limit.
+
+=head2 pick(@list) => $item
+
+Randomly pick an item from list. It is actually simply done as:
+
+ $_[@_ * rand]
+
+=head2 pick_n($n, @list) => @picked
+
+Randomly pick C<n> (distinct) items from list.
 
 
 =head1 SEE ALSO
