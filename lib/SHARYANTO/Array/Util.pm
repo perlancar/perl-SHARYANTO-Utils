@@ -21,6 +21,11 @@ our @EXPORT_OK = qw(
 
 our %SPEC;
 
+$SPEC{':package'} = {
+    v => 1.1,
+    summary => 'Array-related utilities',
+};
+
 my $_str_or_re = ['any*'=>{of=>['re*','str*']}];
 
 $SPEC{match_array_or_regex} = {
@@ -129,7 +134,7 @@ sub replace_array_content {
 }
 
 1;
-# ABSTRACT: Array-related utilities
+# ABSTRACT:
 
 =head1 SYNOPSIS
 
