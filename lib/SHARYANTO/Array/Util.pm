@@ -178,9 +178,6 @@ length(@$aryref), @elems) >> or even easier: C<< @$aryref = @elems >>. I put the
 function here for reminder.
 
 
-=head1 TODO
-
-
 =head1 SEE ALSO
 
 L<SHARYANTO>
