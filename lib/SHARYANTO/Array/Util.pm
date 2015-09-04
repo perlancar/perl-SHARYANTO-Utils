@@ -160,7 +160,7 @@ sub replace_array_content {
 =head1 DESCRIPTION
 
 
-=head1 FUNCTIONS
+=head1 append:FUNCTIONS
 
 =head2 split_array($str_or_re, \@array[, $limit]) => LIST
 

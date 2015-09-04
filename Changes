@@ -1,5 +1,21 @@
 Revision history for SHARYANTO-Utils
 
+0.77    2015-09-04 (PERLANCAR)
+
+        - [dist] Move spec prereqs from RuntimeRequires to DevelopRecommends to
+          reduce deps but still allow indicating spec requirement.
+
+        - Split SHARYANTO::Timer::Simple to its own dist and rename to
+          Simple-Timer.
+
+        - Rename SHARYANTO::ColorTheme::Util to Color::Theme::Util.
+
+        - Add functions: pick(), pick_n(), min_in_range(), max_in_range(),
+          replace_hash_content(), replace_array_content().
+
+        - Fix typo (pointed out by Graham Todd).
+
+
 0.76    2014-10-11 (PERLANCAR)
 
         - Split SHARYANTO::Text::Prompt and SHARYANTO::Locale::Util to their own
